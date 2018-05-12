@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common;
+namespace smalex86\wfCore;
 
-use smalex86\common\{Logger, Session, Database, ControllerFinder};
+use smalex86\wfCore\{Logger, Session, Database, ControllerFinder};
 
 /**
  * Description of Server
@@ -37,7 +37,7 @@ class Server {
   
   /**
    * Возвращает объект логгера
-   * @return Smalex86\Common\Logger
+   * @return smalex86\wfCore\Logger
    */
   public function getLogger() {
     if (!$this->logger) {
@@ -48,7 +48,7 @@ class Server {
   
   /**
    * Возвращает объект для работы с сессиями
-   * @return Smalex86\Common\Session
+   * @return smalex86\wfCore\Session
    */
   public function getSession() {
     if (!$this->session) {
@@ -65,7 +65,7 @@ class Server {
   /**
    * Возвращает объект соединения с базой данных, при создании объекта выполняется 
    * попытка подключения к базе данных
-   * @return Smalex86\Common\Database
+   * @return smalex86\wfCore\Database
    */
   public function getDatabase() {
     if (!$this->database) {
@@ -144,13 +144,13 @@ class Server {
     if (!$className) {
       switch ($type) {
         case 'page':
-          $className = 'smalex86\\common\\controller\\page\\StaticController';
+          $className = 'smalex86\\wfCore\\controller\\page\\StaticController';
           break;
         case 'component':
-          $className = 'smalex86\\common\\controller\\component\\StaticController';
+          $className = 'smalex86\\wfCore\\controller\\component\\StaticController';
           break;
         case 'menu':
-          $className = 'smalex86\\common\\controller\\menu\\StaticController';
+          $className = 'smalex86\\wfCore\\controller\\menu\\StaticController';
           break;
       }
     }       

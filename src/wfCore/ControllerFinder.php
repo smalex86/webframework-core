@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common;
+namespace smalex86\wfCore;
 
-use smalex86\common\{Logger, Database};
+use smalex86\wfCore\{Logger, Database};
 
 /**
  * Данный класс предназначен для поиска названий классов controller в базе данных

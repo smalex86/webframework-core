@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,31 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common\Model;
+namespace smalex86\wfCore\Model;
 
-use smalex86\common\DataMapper;
-use smalex86\common\model\StaticPage;
+use smalex86\wfCore\DataMapper;
+use smalex86\wfCore\model\StaticComponent;
 
 /**
- * Description of StaticPageMapper
+ * Description of StaticComponentMapper
  *
  * @author Александр
  */
-class StaticPageMapper extends DataMapper {
+class StaticComponentMapper extends DataMapper {
   
    /**
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'page';
+    return 'component';
   }
   
   /**
    * возвращает список полей таблицы
    */
   protected function getFields() {
-    return array('pid', 'psid', 'pagealias', 'pagelink', 'pagetitle', 'pagename', 'pageteaser', 
-        'pagetext', 'public_date', 'published');
+    return array();
   }
   
   /**
@@ -52,12 +51,10 @@ class StaticPageMapper extends DataMapper {
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where pagealias = "%s" limit 1', $this->getTableName(), $alias);
+    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row) {
-      return StaticPage::newRecord($row['pid'], $row['psid'], $row['pagealias'], $row['pagelink'], 
-              $row['pagetitle'], $row['pagename'], $row['pageteaser'], $row['pagetext'], 
-              $row['public_date'], $row['published']);
+      return StaticComponent::newRecord($row['comid'], $row['name'], $row['text'], $row['filename']);
     }
     return null;
   }

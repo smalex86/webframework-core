@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace smalex86\common;
+namespace smalex86\wfCore;
 
 /**
  * Description of User

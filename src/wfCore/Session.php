@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common;
+namespace smalex86\wfCore;
 
-use smalex86\common\Logger;
-use smalex86\common\FunctionList as Functions;
+use smalex86\wfCore\Logger;
+use smalex86\wfCore\FunctionList as Functions;
 
 /**
  * Description of Session
@@ -223,7 +223,7 @@ class Session {
     $data = "<script type='text/javascript'>$(function () {";
       /* найти все элементы для отправки данных на сервер */
       $data .= "$('button[msgId]').click( function() {"
-                  . "var posting = $.post('ajax.php?object=smalex86\common\session&action=delPostMsgById&msgId='"
+                  . "var posting = $.post('ajax.php?object=smalex86\wfCore\session&action=delPostMsgById&msgId='"
                   . "+ $(this).attr('msgId'));"
                 . "});";
     // закрывающий хвост 				

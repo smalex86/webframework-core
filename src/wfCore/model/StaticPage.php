@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common\Model;
+namespace smalex86\wfCore\Model;
 
-use smalex86\common\ActiveRecord;
+use smalex86\wfCore\ActiveRecord;
 
 /**
  * Description of StaticPage
@@ -43,7 +43,7 @@ class StaticPage extends ActiveRecord {
    * @param type $pageText
    * @param type $publicDate
    * @param type $published
-   * @return \smalex86\common\model\StaticPage
+   * @return \smalex86\wfCore\model\StaticPage
    */
   static public function newRecord($pid, $psid, $pageAlias, $pageLink, $pageTitle, $pageName, 
           $pageTeaser, $pageText, $publicDate, $published) {

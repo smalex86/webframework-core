@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86\Common package.
+ * This file is part of the smalex86\wfCore package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common;
+namespace smalex86\wfCore;
 
-use smalex86\common\Logger;
+use smalex86\wfCore\Logger;
 
 /**
  * Description of BasicActiveRecord

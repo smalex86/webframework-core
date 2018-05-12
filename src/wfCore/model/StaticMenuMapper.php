@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Smalex86 package.
+ * This file is part of the smalex86 package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\common\Model;
+namespace smalex86\wfCore\Model;
 
-use smalex86\common\DataMapper;
-use smalex86\common\model\StaticMenu;
+use smalex86\wfCore\DataMapper;
+use smalex86\wfCore\model\StaticMenu;
 
 /**
  * Description of StaticMenuMapper
