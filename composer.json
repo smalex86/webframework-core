@@ -1,0 +1,26 @@
+{
+    "name": "smalex86/wfCore",
+    "homepage": "https://bitbucket.org/smalex86/wfcore",
+    "description": "Webframework Core",
+    "keywords": [
+        "framework", "cms", "core"
+    ],
+    "license": "/LICENCE",
+    "authors": [
+        {
+            "name": "Alexandr Smirnov",
+            "email": "mail_er@mail.ru"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0" 
+    },
+    "autoload": {
+        "psr-4": {
+            "smalex86\\wfCore\\": "src"
+        }
+    },
+    "support": {
+        "issues": "https://bitbucket.org/smalex86/wfcore/issues"
+    }
+}
