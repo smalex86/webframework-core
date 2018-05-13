@@ -150,5 +150,23 @@ class Core extends AbstractMigration
               ->addColumn('enabled', 'boolean', ['null' => false, 'default' => 0,
                   'comment' => 'Определяет включен пункт меню или нет'])
               ->create();
+      /**
+       * Контроллер
+       */
+      $tableController = $this->table('core_controller', ['comment' => 'Таблица с контроллерами']);
+      $tableController->addColumn('controller_type_id', 'integer', ['signed' => false, 
+          'comment' => 'Идентификатор типа контроллера'])
+              ->addColumn('alias', 'string', ['comment' => 'Алиас контроллера'])
+              ->addColumn('action', 'string', ['comment' => 'Действие'])
+              ->addColumn('class', 'string', ['comment' => 'Название класса контроллера'])
+              ->create();
+      /**
+       * Тип контроллера
+       */
+      $table = $this->table('core_controller_type', ['comment' => 'Типы контроллеров']);
+      $table->addColumn('name', 'string', ['comment' => 'Название типа'])
+              ->addColumn('description', 'text', ['null' => true, 
+                  'limit' => MysqlAdapter::TEXT_TINY, 'comment' => 'Примечание'])
+              ->create();
     }
 }
