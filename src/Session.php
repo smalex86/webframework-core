@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\Logger;
+use Psr\Log\LoggerInterface;
 use smalex86\webframework\core\FunctionList as Functions;
 
 /**
@@ -21,9 +21,13 @@ use smalex86\webframework\core\FunctionList as Functions;
  */
 class Session {
   
+  /**
+   * Logger
+   * @var LoggerInterface
+   */
   protected $logger;
 
-  public function __construct(Logger $logger) {
+  public function __construct(LoggerInterface $logger) {
     session_start();
     $this->logger = $logger;
   }
@@ -237,7 +241,7 @@ class Session {
    * @return boolean
    */
   public function processAjaxAction($ajaxData = array()) {
-    $this->logger->debugD(__FILE__.'('.__LINE__.'): ajax begin');
+    $this->logger->debug(__FILE__.'('.__LINE__.'): ajax begin');
     // анализ массива _GET		
     if ($ajaxData) {
       switch ($ajaxData['action']) {

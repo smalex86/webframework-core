@@ -11,8 +11,6 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\ActiveRecord;
-
 /**
  * Description of DataMapper
  *

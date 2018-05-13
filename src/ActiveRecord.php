@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Description of BasicActiveRecord
@@ -20,6 +20,10 @@ use smalex86\webframework\core\Logger;
  */
 abstract class ActiveRecord {
   
+  /**
+   * Logger 
+   * @var LoggerInterface
+   */
   protected $logger;
 
   public function __construct() {

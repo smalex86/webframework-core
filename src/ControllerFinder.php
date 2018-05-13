@@ -11,7 +11,8 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\{Logger, Database};
+use smalex86\webframework\core\Database;
+use Psr\Log\LoggerInterface;
 
 /**
  * Данный класс предназначен для поиска названий классов controller в базе данных
@@ -21,9 +22,13 @@ use smalex86\webframework\core\{Logger, Database};
 class ControllerFinder {
   
   protected $database = null;
+  /**
+   * Logger object
+   * @var LoggerInterface
+   */
   protected $logger = null;
   
-  public function __construct(Logger $logger, Database $database) {
+  public function __construct(LoggerInterface $logger, Database $database) {
     $this->logger = $logger;
     $this->database = $database;
   }
@@ -47,7 +52,7 @@ class ControllerFinder {
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row) {
       $msg = 'alias='.$alias.', class='.$row['class'];
-      $this->logger->debugD($msg);
+      $this->logger->debug($msg);
       return $row['class'];
     }
     return null;

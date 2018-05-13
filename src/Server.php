@@ -11,7 +11,9 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\{Logger, Session, Database, ControllerFinder};
+use smalex86\logger\SimpleLogger;
+use Psr\Log\LoggerInterface;
+use smalex86\webframework\core\{Session, Database, ControllerFinder};
 
 /**
  * Description of Server
@@ -20,6 +22,10 @@ use smalex86\webframework\core\{Logger, Session, Database, ControllerFinder};
  */
 class Server {
   
+  /**
+   * Объект логгирования
+   * @var LoggerInterface 
+   */
   protected $logger = null; // поле для хранения указателя на объект логгера
   protected $session = null; // поле для хранения указателя на объект сессии
   protected $database = null; // поле для хранения указателя на объект для работы с базой данных
@@ -32,17 +38,14 @@ class Server {
   
   public function __construct() {
     $this->namespace = __NAMESPACE__;
-    $this->getLogger();
+    $this->logger = new SimpleLogger;
   }
   
   /**
    * Возвращает объект логгера
-   * @return smalex86\webframework\core\Logger
+   * @return smalex86\logger\SimpleLogger
    */
   public function getLogger() {
-    if (!$this->logger) {
-      $this->logger = new Logger;
-    }
     return $this->logger;
   }
   
@@ -52,10 +55,10 @@ class Server {
    */
   public function getSession() {
     if (!$this->session) {
-      $this->session = new Session($this->getLogger());
+      $this->session = new Session($this->logger);
       if (!$this->session) {
         $msg = 'Не удалось обратиться к объекту Session';
-        $this->getLogger()->errorD(__FILE__.':'.__LINE__.': '.$msg);
+        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
         return null;
       }
     }
@@ -71,13 +74,13 @@ class Server {
     if (!$this->database) {
       if (!defined('DB_HOST') || !defined('DB_USERNAME') || !defined('DB_PASSWD') || !defined('DB_NAME')) {
         $msg = 'Не определены константы для подключения к базе данных';
-        $this->getLogger()->errorD(__FILE__.':'.__LINE__.': '.$msg);
+        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
         return null;
       }
-      $this->database = new Database($this->getLogger(), DB_HOST, DB_USERNAME, DB_PASSWD, DB_NAME);
+      $this->database = new Database($this->logger, DB_HOST, DB_USERNAME, DB_PASSWD, DB_NAME);
       if (!$this->database) {
         $msg = 'Не удалось обратиться к объекту базы данных';
-        $this->getLogger()->errorD(__FILE__.':'.__LINE__.': '.$msg);
+        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
         return null;
       }
     }
@@ -125,7 +128,7 @@ class Server {
     // сначала выполняем поиск контроллеров с динамическим содержимым
     $controllerClassFinder = new ControllerFinder($this->getLogger(), $this->getDatabase());
     if (!$controllerClassFinder) {
-      $this->logger->errorD(__FILE__.'('.__LINE__.'): Ошибка при создании объекта ControllerFinder');
+      $this->logger->error(__FILE__.'('.__LINE__.'): Ошибка при создании объекта ControllerFinder');
       return null;
     }
     switch ($type) {
@@ -157,7 +160,7 @@ class Server {
     if (class_exists($className)) {
       return new $className($alias);
     } else {
-      $this->logger->errorD(__FILE__.'('.__LINE__.'): Файл с контроллером (type='.$type.
+      $this->logger->error(__FILE__.'('.__LINE__.'): Файл с контроллером (type='.$type.
               ', alias='.$alias.') класса ' .$className.' не найден');
       return null;
     }
@@ -273,23 +276,23 @@ class Server {
   public function startActionManager() {
     if ($_POST) {
       foreach ($_POST as $field => $value) {
-        $this->logger->debugD(__FILE__.'('.__LINE__.'): Данные = '.var_export($value, true));
+        $this->logger->debug(__FILE__.'('.__LINE__.'): Данные = '.var_export($value, true));
         if (is_array($value)) {
           // подключение требуемой библиотеки
           $className = $this->namespace . '\\' . $field;
-          $this->logger->debugD(__FILE__.'('.__LINE__.'): Класс = '.$className);
-          $this->logger->debugD(__FILE__.'('.__LINE__.'): class exists = '.class_exists($className)); 
+          $this->logger->debug(__FILE__.'('.__LINE__.'): Класс = '.$className);
+          $this->logger->debug(__FILE__.'('.__LINE__.'): class exists = '.class_exists($className)); 
           if (class_exists($className)) {
             $obj = new $className;
             if ($obj && method_exists($obj, 'processAction')) {
               $obj->processAction($value);
             } else {
-              $this->logger->warningD(__FILE__.'('.__LINE__.'): Класс '.$className.
+              $this->logger->warning(__FILE__.'('.__LINE__.'): Класс '.$className.
                       ' не имеет метода processAction, данные ('.var_export($value, true).
                       ') не будут обработаны');
             }
           } else {
-            $this->logger->warningD(__FILE__.'('.__LINE__.'): Класс '.$className.
+            $this->logger->warning(__FILE__.'('.__LINE__.'): Класс '.$className.
                     ' не найден, данные ('.var_export($value, true).
                     ') не будут обработаны');
           }

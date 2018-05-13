@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Description of Database
@@ -29,19 +29,18 @@ class Database {
    * конструктор класса
    * реализует внутри себя подключение к бд и проверку на ошибки
    */
-  function __construct(Logger $logger, $host, $username, $password, $name) {
+  function __construct(LoggerInterface $logger, $host, $username, $password, $name) {
     $this->logger = $logger;
     $this->mysqli = new \mysqli($host, $username, $password, $name);
     if ($this->mysqli->connect_error) {
       $this->errno = $this->mysqli->connect_errno;
       $this->errstr = $this->mysqli->connect_error;
       $msg = 'Connection error (' . $this->errno . '): ' . $this->errstr;
-      $this->logger->ErrorD($msg);
+      $this->logger->error($msg);
       die($msg);
     }  
     else if (!$this->mysqli->set_charset('utf8')) {
-      $this->logger->WarningD("Ошибка при загрузке набора символов utf8: %s\n", 
-              $this->mysqli->error);
+      $this->logger->warning("Ошибка при загрузке набора символов utf8: " . $this->mysqli->error);
     }
   }
   
@@ -106,7 +105,7 @@ class Database {
     $insertId = $this->queryProcess('singleInsert', $query, $place);
     if ($insertId) {
       $msg = $place.': insert_id = '.$insertId;
-      $this->logger->debugD($msg);
+      $this->logger->debug($msg);
     }
     return $insertId;
   }
@@ -120,7 +119,7 @@ class Database {
    */
   private function queryProcess($queryType, $query, $place) {
     $msg = $place.': query = '.$query;
-    $this->logger->debugD($msg);
+    $this->logger->debug($msg);
     if (!$query) {
       return null;
     }
@@ -129,7 +128,7 @@ class Database {
     } else {
       $msg = $place.': Ошибка при выполнении запроса ('.$this->mysqli->errno.'): '
               .$this->mysqli->error;
-      $this->logger->errorD($msg);
+      $this->logger->error($msg);
       return null;
     }
   }
