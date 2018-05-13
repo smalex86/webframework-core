@@ -11,7 +11,6 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\logger\SimpleLogger;
 use Psr\Log\LoggerInterface;
 use smalex86\webframework\core\{Session, Database, ControllerFinder};
 
@@ -23,22 +22,29 @@ use smalex86\webframework\core\{Session, Database, ControllerFinder};
 class Server {
   
   /**
+   * Настройки
+   * @var \ArrayObject
+   */
+  protected $config;
+  /**
    * Объект логгирования
    * @var LoggerInterface 
    */
-  protected $logger = null; // поле для хранения указателя на объект логгера
+  protected $logger = null;
   protected $session = null; // поле для хранения указателя на объект сессии
   protected $database = null; // поле для хранения указателя на объект для работы с базой данных
-  protected $controller = null; // controller текущей страницы, из него осуществляется доступ к странице
+  protected $pageController = null; // controller текущей страницы, из него осуществляется доступ к странице
   protected $menuControllers = array(); // массив контроллеров меню страницы
   protected $componentControllers = array(); // массив контроллеров компонентов страницы
   
   protected $namespace = null; // хранит namespace, поле необходимо чтобы после 
                                // переопределения методов корректно работали ссылки
   
-  public function __construct() {
+  public function __construct(\ArrayObject $config, LoggerInterface $logger, Database $database) {
     $this->namespace = __NAMESPACE__;
-    $this->logger = new SimpleLogger;
+    $this->config = $config;
+    $this->logger = $logger;
+    $this->database = $database;
   }
   
   /**
@@ -71,19 +77,6 @@ class Server {
    * @return smalex86\webframework\core\Database
    */
   public function getDatabase() {
-    if (!$this->database) {
-      if (!defined('DB_HOST') || !defined('DB_USERNAME') || !defined('DB_PASSWD') || !defined('DB_NAME')) {
-        $msg = 'Не определены константы для подключения к базе данных';
-        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
-        return null;
-      }
-      $this->database = new Database($this->logger, DB_HOST, DB_USERNAME, DB_PASSWD, DB_NAME);
-      if (!$this->database) {
-        $msg = 'Не удалось обратиться к объекту базы данных';
-        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
-        return null;
-      }
-    }
     return $this->database;
   }
   
@@ -147,13 +140,13 @@ class Server {
     if (!$className) {
       switch ($type) {
         case 'page':
-          $className = 'smalex86\\webframework\core\\controller\\page\\StaticController';
+          $className = 'smalex86\\webframework\\core\\controller\\page\\StaticController';
           break;
         case 'component':
-          $className = 'smalex86\\webframework\core\\controller\\component\\StaticController';
+          $className = 'smalex86\\webframework\\core\\controller\\component\\StaticController';
           break;
         case 'menu':
-          $className = 'smalex86\\webframework\core\\controller\\menu\\StaticController';
+          $className = 'smalex86\\webframework\\core\\controller\\menu\\StaticController';
           break;
       }
     }       
@@ -171,10 +164,11 @@ class Server {
    * @return Controller
    */
   protected function getPageController() {
-    if (!$this->controller) {
-      $this->controller = $this->getController('page', $this->getPageAlias(), $this->getPageAction());
+    if (!$this->pageController) {
+      $this->pageController = $this->getController('page', $this->getPageAlias(), 
+              $this->getPageAction());
     } 
-    return $this->controller;
+    return $this->pageController;
   }
   
   /**
@@ -182,7 +176,7 @@ class Server {
    * @return string
    */
   public function getPageTitle() {
-    return $this->getPageController()->getTitle() . ' - ' . ST_NAME;
+    return $this->getPageController()->getTitle() . ' - ' . $this->config->site['name'];
   }
   
   /**
