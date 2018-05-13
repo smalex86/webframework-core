@@ -2,3 +2,6 @@
 /nbproject/private/
 vendor
 /composer.lock
+/nbproject/
+/config/*
+/public/test.php
