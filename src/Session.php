@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
-use smalex86\wfCore\Logger;
-use smalex86\wfCore\FunctionList as Functions;
+use smalex86\webframework\core\Logger;
+use smalex86\webframework\core\FunctionList as Functions;
 
 /**
  * Description of Session
@@ -223,7 +223,7 @@ class Session {
     $data = "<script type='text/javascript'>$(function () {";
       /* найти все элементы для отправки данных на сервер */
       $data .= "$('button[msgId]').click( function() {"
-                  . "var posting = $.post('ajax.php?object=smalex86\wfCore\session&action=delPostMsgById&msgId='"
+                  . "var posting = $.post('ajax.php?object=smalex86\webframework\core\session&action=delPostMsgById&msgId='"
                   . "+ $(this).attr('msgId'));"
                 . "});";
     // закрывающий хвост 				

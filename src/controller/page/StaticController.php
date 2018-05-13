@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\controller\Page;
+namespace smalex86\webframework\core\controller\Page;
 
-use smalex86\wfCore\Controller;
-use smalex86\wfCore\model\StaticPageMapper;
+use smalex86\webframework\core\Controller;
+use smalex86\webframework\core\model\StaticPageMapper;
 
 /**
  * Description of Static

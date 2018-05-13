@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
-use smalex86\wfCore\{Logger, Database};
+use smalex86\webframework\core\{Logger, Database};
 
 /**
  * Данный класс предназначен для поиска названий классов controller в базе данных

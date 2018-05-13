@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
-use smalex86\wfCore\ActiveRecord;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of DataMapper

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\Model;
+namespace smalex86\webframework\core\Model;
 
-use smalex86\wfCore\ActiveRecord;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of StaticPage
@@ -43,7 +43,7 @@ class StaticPage extends ActiveRecord {
    * @param type $pageText
    * @param type $publicDate
    * @param type $published
-   * @return \smalex86\wfCore\model\StaticPage
+   * @return \smalex86\webframework\core\model\StaticPage
    */
   static public function newRecord($pid, $psid, $pageAlias, $pageLink, $pageTitle, $pageName, 
           $pageTeaser, $pageText, $publicDate, $published) {

@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\Model;
+namespace smalex86\webframework\core\Model;
 
-use smalex86\wfCore\ActiveRecord;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of StaticComponent
@@ -31,7 +31,7 @@ class StaticComponent extends ActiveRecord {
    * @param string $name
    * @param string $text
    * @param string $filename
-   * @return \smalex86\wfCore\model\StaticComponent
+   * @return \smalex86\webframework\core\model\StaticComponent
    */
   static public function newRecord($comid, $name, $text, $filename) {
     $record = new StaticComponent;

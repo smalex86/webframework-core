@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
-use smalex86\wfCore\{Logger, Session, Database, ControllerFinder};
+use smalex86\webframework\core\{Logger, Session, Database, ControllerFinder};
 
 /**
  * Description of Server
@@ -37,7 +37,7 @@ class Server {
   
   /**
    * Возвращает объект логгера
-   * @return smalex86\wfCore\Logger
+   * @return smalex86\webframework\core\Logger
    */
   public function getLogger() {
     if (!$this->logger) {
@@ -48,7 +48,7 @@ class Server {
   
   /**
    * Возвращает объект для работы с сессиями
-   * @return smalex86\wfCore\Session
+   * @return smalex86\webframework\core\Session
    */
   public function getSession() {
     if (!$this->session) {
@@ -65,7 +65,7 @@ class Server {
   /**
    * Возвращает объект соединения с базой данных, при создании объекта выполняется 
    * попытка подключения к базе данных
-   * @return smalex86\wfCore\Database
+   * @return smalex86\webframework\core\Database
    */
   public function getDatabase() {
     if (!$this->database) {
@@ -144,13 +144,13 @@ class Server {
     if (!$className) {
       switch ($type) {
         case 'page':
-          $className = 'smalex86\\wfCore\\controller\\page\\StaticController';
+          $className = 'smalex86\\webframework\core\\controller\\page\\StaticController';
           break;
         case 'component':
-          $className = 'smalex86\\wfCore\\controller\\component\\StaticController';
+          $className = 'smalex86\\webframework\core\\controller\\component\\StaticController';
           break;
         case 'menu':
-          $className = 'smalex86\\wfCore\\controller\\menu\\StaticController';
+          $className = 'smalex86\\webframework\core\\controller\\menu\\StaticController';
           break;
       }
     }       

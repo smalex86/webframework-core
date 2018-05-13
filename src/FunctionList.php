@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
 /**
  * Description of FunctionObject

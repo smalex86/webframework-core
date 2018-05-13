@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\controller\Menu;
+namespace smalex86\webframework\core\controller\Menu;
 
-use smalex86\wfCore\Controller;
-use smalex86\wfCore\model\StaticMenuMapper;
+use smalex86\webframework\core\Controller;
+use smalex86\webframework\core\model\StaticMenuMapper;
 
 /**
  * Description of Static

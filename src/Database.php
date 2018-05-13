@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the smalex86\wfCore package.
+ * This file is part of the smalex86\webframework\core package.
  *
  * (c) Alexandr Smirnov <mail_er@mail.ru>
  *
@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore;
+namespace smalex86\webframework\core;
 
-use smalex86\wfCore\Logger;
+use smalex86\webframework\core\Logger;
 
 /**
  * Description of Database

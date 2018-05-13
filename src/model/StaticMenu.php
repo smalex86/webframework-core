@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\Model;
+namespace smalex86\webframework\core\Model;
 
-use smalex86\wfCore\ActiveRecord;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * StaticMenu Active Record
@@ -37,7 +37,7 @@ class StaticMenu extends ActiveRecord {
    * @param string $template
    * @param string $type
    * @param array $items
-   * @return \smalex86\wfCore\model\StaticComponent
+   * @return \smalex86\webframework\core\model\StaticComponent
    */
   static public function newRecord($mid, $name, $alias, $template, $type, $items) {
     $record = new StaticMenu;

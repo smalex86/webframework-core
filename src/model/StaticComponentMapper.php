@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\wfCore\Model;
+namespace smalex86\webframework\core\Model;
 
-use smalex86\wfCore\DataMapper;
-use smalex86\wfCore\model\StaticComponent;
+use smalex86\webframework\core\DataMapper;
+use smalex86\webframework\core\model\StaticComponent;
 
 /**
  * Description of StaticComponentMapper
