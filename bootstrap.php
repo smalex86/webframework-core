@@ -15,10 +15,13 @@ foreach ($files as $file) {
 // конфигурация
 $config = new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
 // логгер
-$logger = new smalex86\logger\SimpleLogger(
-        $config['logger']['status'], 
-        $config['logger']['logfile'], 
-        $config['logger']['logFolder']);
+$logger = new smalex86\logger\Logger();
+$logger->routeList->attach(new smalex86\logger\route\FileRoute([
+    'isEnabled' => true,
+    'maxLevel' => $config['logger']['status'],
+    'logFile' => $config['logger']['logfile'],
+    'folder' => $config['logger']['logFolder']
+]));
 // база данных
 $database = new smalex86\webframework\core\Database(
         $logger, 

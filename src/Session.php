@@ -241,7 +241,7 @@ class Session {
    * @return boolean
    */
   public function processAjaxAction($ajaxData = array()) {
-    $this->logger->debug(__FILE__.'('.__LINE__.'): ajax begin');
+    $this->logger->debug('ajax begin');
     // анализ массива _GET		
     if ($ajaxData) {
       switch ($ajaxData['action']) {

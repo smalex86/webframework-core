@@ -64,7 +64,7 @@ class Server {
       $this->session = new Session($this->logger);
       if (!$this->session) {
         $msg = 'Не удалось обратиться к объекту Session';
-        $this->logger->error(__FILE__.':'.__LINE__.': '.$msg);
+        $this->logger->error($msg);
         return null;
       }
     }
@@ -121,7 +121,7 @@ class Server {
     // сначала выполняем поиск контроллеров с динамическим содержимым
     $controllerClassFinder = new ControllerFinder($this->getLogger(), $this->getDatabase());
     if (!$controllerClassFinder) {
-      $this->logger->error(__FILE__.'('.__LINE__.'): Ошибка при создании объекта ControllerFinder');
+      $this->logger->error('Ошибка при создании объекта ControllerFinder');
       return null;
     }
     switch ($type) {
@@ -153,7 +153,7 @@ class Server {
     if (class_exists($className)) {
       return new $className($alias);
     } else {
-      $this->logger->error(__FILE__.'('.__LINE__.'): Файл с контроллером (type='.$type.
+      $this->logger->error('Файл с контроллером (type='.$type.
               ', alias='.$alias.') класса ' .$className.' не найден');
       return null;
     }
@@ -270,23 +270,23 @@ class Server {
   public function startActionManager() {
     if ($_POST) {
       foreach ($_POST as $field => $value) {
-        $this->logger->debug(__FILE__.'('.__LINE__.'): Данные = '.var_export($value, true));
+        $this->logger->debug('Данные = '.var_export($value, true));
         if (is_array($value)) {
           // подключение требуемой библиотеки
           $className = $this->namespace . '\\' . $field;
-          $this->logger->debug(__FILE__.'('.__LINE__.'): Класс = '.$className);
-          $this->logger->debug(__FILE__.'('.__LINE__.'): class exists = '.class_exists($className)); 
+          $this->logger->debug('Класс = '.$className);
+          $this->logger->debug('class exists = '.class_exists($className)); 
           if (class_exists($className)) {
             $obj = new $className;
             if ($obj && method_exists($obj, 'processAction')) {
               $obj->processAction($value);
             } else {
-              $this->logger->warning(__FILE__.'('.__LINE__.'): Класс '.$className.
+              $this->logger->warning('Класс '.$className.
                       ' не имеет метода processAction, данные ('.var_export($value, true).
                       ') не будут обработаны');
             }
           } else {
-            $this->logger->warning(__FILE__.'('.__LINE__.'): Класс '.$className.
+            $this->logger->warning('Класс '.$className.
                     ' не найден, данные ('.var_export($value, true).
                     ') не будут обработаны');
           }
