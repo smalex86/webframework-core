@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\Model;
+namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\ActiveRecord;
 

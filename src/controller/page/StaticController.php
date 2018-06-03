@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\controller\Page;
+namespace smalex86\webframework\core\controller\page;
 
 use smalex86\webframework\core\Controller;
 use smalex86\webframework\core\model\StaticPageMapper;
