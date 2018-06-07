@@ -1,6 +1,6 @@
 {
     "name": "smalex86/webframework-core",
-    "homepage": "https://bitbucket.org/smalex86/webframework-core",
+    "homepage": "https://github.com/smalex86/webframework-core",
     "description": "Webframework Core",
     "keywords": [
         "framework", "cms", "core"
@@ -30,6 +30,6 @@
         }
     },
     "support": {
-        "issues": "https://bitbucket.org/smalex86/webframework-fcore/issues"
+        "issues": "https://github.com/smalex86/webframework-core/issues"
     }
 }
