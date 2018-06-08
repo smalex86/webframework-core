@@ -45,8 +45,8 @@ class ControllerFinder {
     $alias = $this->database->getSafetyString($alias);
     $action = $this->database->getSafetyString($action);
     $query = sprintf('select class '
-            . 'from controller c '
-            . 'left join controller_type ct on ct.ctid = c.ctid '
+            . 'from core_controller c '
+            . 'left join core_controller_type ct on ct.id = c.controller_type_id '
             . 'where ct.name = "%s" and c.alias = "%s" and c.action = "%s"',
             $type, $alias, $action);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);

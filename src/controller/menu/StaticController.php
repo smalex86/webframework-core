@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\controller\Menu;
+namespace smalex86\webframework\core\controller\menu;
 
 use smalex86\webframework\core\Controller;
 use smalex86\webframework\core\model\StaticMenuMapper;

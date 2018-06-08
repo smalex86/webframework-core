@@ -25,7 +25,7 @@
         
         <!--<link rel="shortcut icon" href="templates/favicon.ico">-->
           
-        <title><?php /*echo $application->getPageTitle()*/ ?></title>
+        <title><?php echo $application->getPageTitle(); ?></title>
 
     <!-- Bootstrap core CSS -->
     <link href="templates/main/css/bootstrap.min.css" rel="stylesheet">
@@ -55,10 +55,8 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <h3>Подключенные аккаунты</h3>
-          <?php echo $application->getAccountList()->getAccountListHtml(); ?>
-          <h3>Подключение аккаунта</h3>
-          <?php echo $application->getAccountList()->getAccountAddFormHtml(); ?>
+          <h1><?php echo $application->getPageTitle(); ?></h1>
+          <?php echo $application->getPageContent(); ?>
         </div>  
       </div>
   </div>

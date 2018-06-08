@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\Model;
+namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\DataMapper;
 use smalex86\webframework\core\model\StaticMenu;
@@ -25,7 +25,7 @@ class StaticMenuMapper extends DataMapper {
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'menu';
+    return 'core_menu';
   }
   
   /**
@@ -55,7 +55,7 @@ class StaticMenuMapper extends DataMapper {
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row && isset($row['mid'])) {
       // загрузить пункты меню
-      $query = sprintf('select * from menu_item where mid = %u', $row['mid']);
+      $query = sprintf('select * from core_menu_item where mid = %u', $row['mid']);
       $items = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
       if (is_array($items)) {
         return StaticMenu::newRecord($row['mid'], $row['name'], $row['alias'], $row['template'], 

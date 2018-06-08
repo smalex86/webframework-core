@@ -1,6 +1,6 @@
 {
     "name": "smalex86/webframework-core",
-    "homepage": "https://bitbucket.org/smalex86/webframework-core",
+    "homepage": "https://github.com/smalex86/webframework-core",
     "description": "Webframework Core",
     "keywords": [
         "framework", "cms", "core"
@@ -21,7 +21,8 @@
     "require": {
         "php": ">=7.0.0",
         "psr/log": "^1.0",
-        "smalex86/logger": "1.5.2"
+        "smalex86/logger": "1.7.2",
+        "robmorgan/phinx": "^0.9.2"
     },
     "autoload": {
         "psr-4": {
@@ -29,6 +30,6 @@
         }
     },
     "support": {
-        "issues": "https://bitbucket.org/smalex86/webframework-fcore/issues"
+        "issues": "https://github.com/smalex86/webframework-core/issues"
     }
 }

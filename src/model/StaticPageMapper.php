@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\Model;
+namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\DataMapper;
 use smalex86\webframework\core\model\StaticPage;
@@ -25,15 +25,15 @@ class StaticPageMapper extends DataMapper {
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'page';
+    return 'core_page';
   }
   
   /**
    * возвращает список полей таблицы
    */
   protected function getFields() {
-    return array('pid', 'psid', 'pagealias', 'pagelink', 'pagetitle', 'pagename', 'pageteaser', 
-        'pagetext', 'public_date', 'published');
+    return array('id', 'page_section_id', 'alias', 'link', 'title', 'name', 'teaser', 
+        'text', 'date_create', 'date_public', 'date_update', 'published');
   }
   
   /**
@@ -52,12 +52,12 @@ class StaticPageMapper extends DataMapper {
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where pagealias = "%s" limit 1', $this->getTableName(), $alias);
+    $query = sprintf('select * from %s where alias = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row) {
-      return StaticPage::newRecord($row['pid'], $row['psid'], $row['pagealias'], $row['pagelink'], 
-              $row['pagetitle'], $row['pagename'], $row['pageteaser'], $row['pagetext'], 
-              $row['public_date'], $row['published']);
+      return StaticPage::newRecord($row['id'], $row['page_section_id'], $row['alias'], $row['link'], 
+              $row['title'], $row['name'], $row['teaser'], $row['text'], $row['date_create'],
+              $row['date_public'], $row['date_update'], $row['published']);
     }
     return null;
   }

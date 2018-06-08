@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\Model;
+namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\DataMapper;
 use smalex86\webframework\core\model\StaticComponent;
@@ -25,7 +25,7 @@ class StaticComponentMapper extends DataMapper {
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'component';
+    return 'core_component';
   }
   
   /**

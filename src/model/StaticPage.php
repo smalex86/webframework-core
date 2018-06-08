@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\Model;
+namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\ActiveRecord;
 
@@ -20,43 +20,49 @@ use smalex86\webframework\core\ActiveRecord;
  */
 class StaticPage extends ActiveRecord {
   
-  public $pid;
-  public $psid;
-  public $pageAlias;
-  public $pageLink;
-  public $pageTitle;
-  public $pageName;
-  public $pageTeaser;
-  public $pageText;
-  public $publicDate;
+  public $id;
+  public $pageSectionId;
+  public $alias;
+  public $link;
+  public $title;
+  public $name;
+  public $teaser;
+  public $text;
+  public $dateCreate;
+  public $datePublic;
+  public $dateUpdate;
   public $published;
   
   /**
    * Данный статический метод создает экземпляр данного класса с указанными параметрами
-   * @param type $pid
-   * @param type $psid
-   * @param type $pageAlias
-   * @param type $pageLink
-   * @param type $pageTitle
-   * @param type $pageName
-   * @param type $pageTeaser
-   * @param type $pageText
-   * @param type $publicDate
+   * @param type $id
+   * @param type $pageSectionId
+   * @param type $alias
+   * @param type $link
+   * @param type $title
+   * @param type $name
+   * @param type $teaser
+   * @param type $text
+   * @param type $dateCreate
+   * @param type $datePublic
+   * @param type $dateUpdate
    * @param type $published
    * @return \smalex86\webframework\core\model\StaticPage
    */
-  static public function newRecord($pid, $psid, $pageAlias, $pageLink, $pageTitle, $pageName, 
-          $pageTeaser, $pageText, $publicDate, $published) {
+  static public function newRecord($id, $pageSectionId, $alias, $link, $title, $name, 
+          $teaser, $text, $dateCreate, $datePublic, $dateUpdate, $published) {
     $record = new StaticPage;
-    $record->pid = $pid;
-    $record->psid = $psid;
-    $record->pageAlias = $pageAlias;
-    $record->pageLink = $pageLink;
-    $record->pageTitle = $pageTitle;
-    $record->pageName = $pageName;
-    $record->pageTeaser = $pageTeaser;
-    $record->pageText = $pageText;
-    $record->publicDate = $publicDate;
+    $record->pid = $id;
+    $record->pageSectionId = $pageSectionId;
+    $record->alias = $alias;
+    $record->link = $link;
+    $record->title = $title;
+    $record->name = $name;
+    $record->teaser = $teaser;
+    $record->text = $text;
+    $record->dateCreate = $dateCreate;
+    $record->datePublic = $datePublic;
+    $record->dateUpdate = $dateUpdate;
     $record->published = $published;
     return $record;
   }
