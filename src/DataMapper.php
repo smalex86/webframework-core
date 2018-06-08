@@ -11,20 +11,23 @@
 
 namespace smalex86\webframework\core;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
 /**
  * Description of DataMapper
  *
  * @author Alexandr Smirnov
  */
-abstract class DataMapper {
+abstract class DataMapper implements LoggerAwareInterface {
   
-  protected $logger; // объект логгирования
+  use LoggerAwareTrait;
+  
   protected $database; // объект бд
   protected $session; // объект для работы с сессией
   
   public function __construct() {
     global $application;
-    $this->logger = $application->getLogger();
     $this->database = $application->getDatabase();
     $this->session = $application->getSession();
   }

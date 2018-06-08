@@ -35,6 +35,7 @@ class StaticController extends Controller {
   protected function getMapper() {
     if (!$this->mapper) {
       $this->mapper = new StaticMenuMapper;
+      $this->mapper->setLogger($this->logger);
     }
     return $this->mapper;
   }

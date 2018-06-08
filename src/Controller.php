@@ -11,14 +11,18 @@
 
 namespace smalex86\webframework\core;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
 /**
  * Description of Controller
  *
  * @author Alexandr Smirnov
  */
-abstract class Controller {
+abstract class Controller implements LoggerAwareInterface {
   
-  protected $logger = null;
+  use LoggerAwareTrait;
+  
   protected $mapper = null;
   protected $record = null;
   
