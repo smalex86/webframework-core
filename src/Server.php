@@ -95,6 +95,17 @@ class Server {
     }
   }
   
+  /** 
+   * Возвращает название сайта
+   * @return string
+   */
+  public function getSiteName() {
+    if (isset($this->config->site['name'])) {
+      return $this->config->site['name'];
+    }
+    return '';
+  }
+  
   /**
    * Метод формирует действие текущей страницы по значениям параметров GET
    * В базовом варианте обрабатывается два варианта:
@@ -149,9 +160,11 @@ class Server {
           $className = 'smalex86\\webframework\\core\\controller\\menu\\StaticController';
           break;
       }
-    }       
+    }   
     if (class_exists($className)) {
-      return new $className($alias);
+      $controller = new $className($alias);
+      $controller->setLogger($this->logger);
+      return $controller;
     } else {
       $this->logger->error('Файл с контроллером (type='.$type.
               ', alias='.$alias.') класса ' .$className.' не найден');
