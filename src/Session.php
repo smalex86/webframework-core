@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core;
 
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 use smalex86\webframework\core\FunctionList as Functions;
 
 /**
@@ -19,17 +19,42 @@ use smalex86\webframework\core\FunctionList as Functions;
  *
  * @author Alexandr Smirnov
  */
-class Session {
+class Session implements LoggerAwareInterface {
+  
+  use \Psr\Log\LoggerAwareTrait;
+  
+  public function __construct() {
+    session_start();
+  }
   
   /**
-   * Logger
-   * @var LoggerInterface
+   * Возвращает массив данных из сессии по ключу
+   * @param string $index Индекс элемента массива из сессии
+   * @return array|string
    */
-  protected $logger;
-
-  public function __construct(LoggerInterface $logger) {
-    session_start();
-    $this->logger = $logger;
+  public function getData(string $index)
+  {
+    if (isset($_SESSION[$index])) {
+      return $_SESSION[$index];
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Записывает данные в сессию
+   * Если элемент с таким индексом существует, то он будет перезаписан
+   * @param string $index Индекс элемента
+   * @param array $data Данные элемента
+   */
+  public function setData(string $index, array $data) 
+  {
+    if (!empty($data) && $index != 'postData' && $index != 'postMsg') {
+      if (isset($_SESSION[$index])) {
+        unset($_SESSION[$index]);
+      }
+      $_SESSION[$index] = $data;
+    }
   }
   
   /**
