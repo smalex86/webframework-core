@@ -117,6 +117,21 @@ class Database {
   }
   
   /**
+   * Метод для обновления одиночной записи в бд
+   * @param string $query
+   * @param string $place
+   * @return bool
+   */
+  public function updateSingle($query, $place) {
+    $result = $this->queryProcess('singleUpdate', $query, $place);
+    if ($result === true) {
+      $msg = $place.': update = true';
+      $this->logger->debug($msg);
+    }
+    return $result;
+  }
+  
+  /**
    * Метод обрабатывает запрос к базе данных с указанием в каком виде данные вернуть
    * @param string $queryType тип возвращаемых данных 
    * @param string $query запрос
@@ -151,15 +166,14 @@ class Database {
         $row = $result->fetch_assoc();
         $result->close();
         return $row;
-        break;
       case 'multipleSelect':
         $rows = $this->fetchAll($result);
         $result->close();
         return $rows;
-        break;
       case 'singleInsert':
         return $this->mysqli->insert_id; // при добавлении одной записи возвращаем ее новый ид
-        break;
+      case 'singleUpdate':
+        return $result; // при обновлении возвращаем просто результат
       default:
         break;
     }
