@@ -13,6 +13,9 @@ namespace smalex86\webframework\core;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use smalex86\webframework\core\Database;
+use smalex86\webframework\core\Session;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of DataMapper
@@ -23,19 +26,34 @@ abstract class DataMapper implements LoggerAwareInterface {
   
   use LoggerAwareTrait;
   
-  protected $database; // объект бд
-  protected $session; // объект для работы с сессией
+  /**
+   * объект бд
+   * @var Database
+   */
+  protected $database;
+  /**
+   * объект для работы с сессией
+   * @var Session
+   */
+  protected $session;
+  /**
+   * Название таблицы
+   * @var string 
+   */
+  protected $tableName = '';
   
-  public function __construct() {
-    global $application;
-    $this->database = $application->getDatabase();
-    $this->session = $application->getSession();
+  public function __construct(Database $database, Session $session) {
+    $this->database = $database;
+    $this->session = $session;
   }
   
   /**
    * метод возвращает название таблицы данных
    */
-  abstract protected function getTableName();
+  protected function getTableName() 
+  {
+    return $this->tableName;
+  }
   
   /**
    * возвращает список полей таблицы
@@ -49,8 +67,9 @@ abstract class DataMapper implements LoggerAwareInterface {
   
   /**
    * возвращает объект по идентификатору
+   * @param int $id Идентификатор записи
    */
-  abstract public function getById($id);
+  abstract public function getById(int $id);
   
   /**
    * возвращает список объектов
@@ -59,8 +78,9 @@ abstract class DataMapper implements LoggerAwareInterface {
   
   /**
    * выполняет сохранение объекта в бд
+   * @param ActiveRecord $record
    */
-  abstract public function save($obj);
+  abstract public function save(ActiveRecord $record);
   
   /**
    * выполняет обработку пост-данных

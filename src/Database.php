@@ -101,6 +101,12 @@ class Database {
     return $this->queryProcess('multipleSelect', $query, $place);
   }
   
+  /**
+   * Метод для вставки одиночной записи в бд
+   * @param string $query
+   * @param string $place
+   * @return int|string
+   */
   public function insertSingle($query, $place) {
     $insertId = $this->queryProcess('singleInsert', $query, $place);
     if ($insertId) {
