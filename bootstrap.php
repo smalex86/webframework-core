@@ -3,6 +3,16 @@
 // подключение автозагрузчика классов 
 include_once __DIR__ . '/vendor/autoload.php';
 
+/* Настройки php */
+ini_set("session.use_trans_sid", true); // поддержка использования SID (идентификатора сессии)
+
+if (!defined("PATH_SEPARATOR")) {
+  define("PATH_SEPARATOR", getenv("COMSPEC")? ";" : ":");
+}
+if (!defined("DIRECTORY_SEPARATOR")) {
+  define("DIRECTORY_SEPARATOR ", "/");
+}
+
 // определение пути для файлов конфигурации
 $configPath = __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR; 
 // загрузка файлов конфигурации
