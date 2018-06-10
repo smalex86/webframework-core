@@ -11,24 +11,19 @@
 
 namespace smalex86\webframework\core;
 
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
 /**
  * Description of BasicActiveRecord
  *
  * @author Alexandr Smirnov
  */
-abstract class ActiveRecord {
+abstract class ActiveRecord implements LoggerAwareInterface {
   
-  /**
-   * Logger 
-   * @var LoggerInterface
-   */
-  protected $logger;
+  use \Psr\Log\LoggerAwareTrait;
 
   public function __construct() {
-    global $application;
-    $this->logger = $application->getLogger();
+    
   }
   
   //abstract static public function newRecord();
