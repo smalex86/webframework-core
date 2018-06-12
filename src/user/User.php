@@ -9,14 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core;
+namespace smalex86\webframework\core\user;
 
 use smalex86\webframework\core\ActiveRecord;
+use smalex86\webframework\core\Server;
+use smalex86\webframework\core\user\{UserGroup, UserGroupMapper};
 
 /**
  * User
  *
- * @author Alexandr Smirnov
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
 class User extends ActiveRecord {
   
@@ -46,6 +48,17 @@ class User extends ActiveRecord {
   public $avatar;
   /** Номер телефона пользователя */
   public $phone;
+  
+  /**
+   * Объект приложения
+   * @var Server
+   */
+  protected $application;
+  /**
+   * Объект группы
+   * @var UserGroup
+   */
+  protected $group;
   
   /**
    * Конструктор
@@ -82,18 +95,32 @@ class User extends ActiveRecord {
   }
   
   /**
-   * Получить идентификатор пользователя
-   * @return int
+   * Задать объект приложения
+   * @param Server $application
    */
-  public function getId(): int
+  public function setApplication(Server $application)
   {
-    if (isset($this->id)) {
-      return $this->id;
-    } else {
-      return 0;
-    }
+    $this->application = $application;
   }
   
-  
+  /**
+   * Возвращает объект группы пользователя
+   * @param Server $application
+   * @return UserGroup
+   */
+  public function getUserGroup(): UserGroup
+  {
+    if (!$this->group) {
+      if (!$this->application) {
+        return null;
+      } else {
+        $userGroupMapper = new UserGroupMapper($this->application->getDatabase(), 
+                $this->application->getSession());
+        $this->group = $userGroupMapper->getById($this->groupId);
+        $this->group->setApplication($this->application);
+      }
+    }
+    return $this->group;
+  }
   
 }

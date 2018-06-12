@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core;
+namespace smalex86\webframework\core\user;
 
-use smalex86\webframework\core\DataMapper;
+use smalex86\webframework\core\{ActiveRecord, Database, DataMapper, Session};
 
 /**
  * UserMapper
