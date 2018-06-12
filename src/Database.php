@@ -101,6 +101,12 @@ class Database {
     return $this->queryProcess('multipleSelect', $query, $place);
   }
   
+  /**
+   * Метод для вставки одиночной записи в бд
+   * @param string $query
+   * @param string $place
+   * @return int|string
+   */
   public function insertSingle($query, $place) {
     $insertId = $this->queryProcess('singleInsert', $query, $place);
     if ($insertId) {
@@ -108,6 +114,21 @@ class Database {
       $this->logger->debug($msg);
     }
     return $insertId;
+  }
+  
+  /**
+   * Метод для обновления одиночной записи в бд
+   * @param string $query
+   * @param string $place
+   * @return bool
+   */
+  public function updateSingle($query, $place) {
+    $result = $this->queryProcess('singleUpdate', $query, $place);
+    if ($result === true) {
+      $msg = $place.': update = true';
+      $this->logger->debug($msg);
+    }
+    return $result;
   }
   
   /**
@@ -145,15 +166,14 @@ class Database {
         $row = $result->fetch_assoc();
         $result->close();
         return $row;
-        break;
       case 'multipleSelect':
         $rows = $this->fetchAll($result);
         $result->close();
         return $rows;
-        break;
       case 'singleInsert':
         return $this->mysqli->insert_id; // при добавлении одной записи возвращаем ее новый ид
-        break;
+      case 'singleUpdate':
+        return $result; // при обновлении возвращаем просто результат
       default:
         break;
     }

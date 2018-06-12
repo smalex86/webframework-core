@@ -9,4 +9,4 @@ $logger->debug('file_get_contents = ' . var_export(file_get_contents("php://inpu
 $application->startActionManager(); // запуск обработки пост-данных
 $application->startPageBuilder(); // запуск построения страницы
 
-include('templates/main/index.php');
+include('templates/dashboard/index.php');

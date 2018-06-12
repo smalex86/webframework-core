@@ -11,39 +11,59 @@
 
 namespace smalex86\webframework\core;
 
-use Psr\Log\LoggerInterface;
-use smalex86\webframework\core\{Session, Database, ControllerFinder};
+use ArrayObject;
+use Psr\Log\LoggerAwareInterface;
+use smalex86\webframework\core\{Controller, ControllerFinder, Database, Session};
 
 /**
  * Description of Server
  *
  * @author Alexandr Smirnov
  */
-class Server {
+class Server implements LoggerAwareInterface {
+  
+  use \Psr\Log\LoggerAwareTrait;
   
   /**
    * Настройки
-   * @var \ArrayObject
+   * @var ArrayObject
    */
   protected $config;
   /**
-   * Объект логгирования
-   * @var LoggerInterface 
+   * Поле для хранения указателя на объект сессии
+   * @var Session
    */
-  protected $logger = null;
-  protected $session = null; // поле для хранения указателя на объект сессии
-  protected $database = null; // поле для хранения указателя на объект для работы с базой данных
-  protected $pageController = null; // controller текущей страницы, из него осуществляется доступ к странице
-  protected $menuControllers = array(); // массив контроллеров меню страницы
-  protected $componentControllers = array(); // массив контроллеров компонентов страницы
+  protected $session = null;
+  /**
+   * поле для хранения указателя на объект для работы с базой данных
+   * @var Database
+   */
+  protected $database = null;
+  /**
+   * controller текущей страницы, из него осуществляется доступ к странице
+   * @var Controller 
+   */
+  protected $pageController = null; 
+  /**
+   * массив контроллеров меню страницы
+   * @var Controller[] 
+   */
+  protected $menuControllers = [];
+  /**
+   * массив контроллеров компонентов страницы
+   * @var Controller[] 
+   */
+  protected $componentControllers = array();
+  /**
+   * хранит namespace, поле необходимо чтобы после
+   * переопределения методов корректно работали ссылки
+   * @var string
+   */
+  protected $namespace = '';
   
-  protected $namespace = null; // хранит namespace, поле необходимо чтобы после 
-                               // переопределения методов корректно работали ссылки
-  
-  public function __construct(\ArrayObject $config, LoggerInterface $logger, Database $database) {
+  public function __construct(ArrayObject $config, Database $database) {
     $this->namespace = __NAMESPACE__;
     $this->config = $config;
-    $this->logger = $logger;
     $this->database = $database;
   }
   
@@ -57,11 +77,12 @@ class Server {
   
   /**
    * Возвращает объект для работы с сессиями
-   * @return smalex86\webframework\core\Session
+   * @return Session
    */
   public function getSession() {
     if (!$this->session) {
-      $this->session = new Session($this->logger);
+      $this->session = new Session();
+      $this->session->setLogger($this->logger);
       if (!$this->session) {
         $msg = 'Не удалось обратиться к объекту Session';
         $this->logger->error($msg);
@@ -74,7 +95,7 @@ class Server {
   /**
    * Возвращает объект соединения с базой данных, при создании объекта выполняется 
    * попытка подключения к базе данных
-   * @return smalex86\webframework\core\Database
+   * @return Database
    */
   public function getDatabase() {
     return $this->database;
@@ -93,6 +114,17 @@ class Server {
     } else {
       return 'main';
     }
+  }
+  
+  /** 
+   * Возвращает название сайта
+   * @return string
+   */
+  public function getSiteName() {
+    if (isset($this->config->site['name'])) {
+      return $this->config->site['name'];
+    }
+    return '';
   }
   
   /**
@@ -149,9 +181,11 @@ class Server {
           $className = 'smalex86\\webframework\\core\\controller\\menu\\StaticController';
           break;
       }
-    }       
+    }   
     if (class_exists($className)) {
-      return new $className($alias);
+      $controller = new $className($this, $alias);
+      $controller->setLogger($this->logger);
+      return $controller;
     } else {
       $this->logger->error('Файл с контроллером (type='.$type.
               ', alias='.$alias.') класса ' .$className.' не найден');

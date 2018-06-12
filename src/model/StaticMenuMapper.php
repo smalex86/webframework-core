@@ -13,6 +13,7 @@ namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\DataMapper;
 use smalex86\webframework\core\model\StaticMenu;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of StaticMenuMapper
@@ -45,21 +46,21 @@ class StaticMenuMapper extends DataMapper {
   /**
    * возвращает объект по идентификатору
    */
-  public function getById($id) {
+  public function getById(int $id) {
     
   }
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where alias = "%s" limit 1', $this->getTableName(), $alias);
+    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row && isset($row['mid'])) {
+    if ($row && isset($row['id'])) {
       // загрузить пункты меню
-      $query = sprintf('select * from core_menu_item where mid = %u', $row['mid']);
+      $query = sprintf('select * from core_menu_item where menu_id = %u', $row['id']);
       $items = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
       if (is_array($items)) {
-        return StaticMenu::newRecord($row['mid'], $row['name'], $row['alias'], $row['template'], 
-                $row['type'], $items);
+        return StaticMenu::newRecord($row['id'], $row['name'], $row['template'], $row['type'], 
+                $items);
       }
       return null;
     }
@@ -76,7 +77,7 @@ class StaticMenuMapper extends DataMapper {
   /**
    * выполняет сохранение объекта в бд
    */
-  public function save($obj) {
+  public function save(ActiveRecord $record) {
     
   }
   

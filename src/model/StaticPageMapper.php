@@ -13,6 +13,7 @@ namespace smalex86\webframework\core\model;
 
 use smalex86\webframework\core\DataMapper;
 use smalex86\webframework\core\model\StaticPage;
+use smalex86\webframework\core\ActiveRecord;
 
 /**
  * Description of StaticPageMapper
@@ -46,7 +47,7 @@ class StaticPageMapper extends DataMapper {
   /**
    * возвращает объект по идентификатору
    */
-  public function getById($id) {
+  public function getById(int $id) {
     
   }
   
@@ -72,7 +73,7 @@ class StaticPageMapper extends DataMapper {
   /**
    * выполняет сохранение объекта в бд
    */
-  public function save($obj) {
+  public function save(ActiveRecord $record) {
     
   }
   

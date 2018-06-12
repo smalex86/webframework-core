@@ -20,10 +20,6 @@ use smalex86\webframework\core\model\StaticMenuMapper;
  * @author Alexandr Smirnov
  */
 class StaticController extends Controller {
-  
-  public function __construct($alias = '') {
-    parent::__construct($alias);
-  }
    
   protected function getRecord() {
     if (!$this->record) {
@@ -34,7 +30,9 @@ class StaticController extends Controller {
   
   protected function getMapper() {
     if (!$this->mapper) {
-      $this->mapper = new StaticMenuMapper;
+      $this->mapper = new StaticMenuMapper($this->application->getDatabase(),
+              $this->application->getSession());
+      $this->mapper->setLogger($this->logger);
     }
     return $this->mapper;
   }

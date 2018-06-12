@@ -6,7 +6,7 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="keywords" content="">
-  <meta name="rights" content="<?php echo ST_NAME; ?>">
+  <meta name="rights" content="<?php echo $application->getSiteName(); ?>">
   <meta name="author" content="Alexander Smirnov">
   <meta name="description" content="">
   <title><?php echo $application->getPageTitle() ?></title>
@@ -26,8 +26,8 @@
 
 <body>
 	
-  <?php if(/*$application->getUserAccessLevel() == 10*/true) : ?>
-
+  <?php if($user->getUserGroup()->isAdmin()) : ?>
+    
   <!-- Nav -->
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">						
@@ -38,7 +38,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.php"><?php echo ST_NAME; ?></a>
+        <a class="navbar-brand" href="index.php"><?php echo $application->getSiteName(); ?></a>
       </div>
       <div class="collapse navbar-collapse">
         <?php echo $application->getMenu('main'); ?>
@@ -54,7 +54,6 @@
       <div class="col-sm-3 col-md-2 sidebar">
         <?php echo $application->getMenu('admin'); ?>
         <hr>
-        <?php echo $application->getMenu('adminadvert'); ?>
       </div> <!-- left menu -->
 
       <!-- content -->

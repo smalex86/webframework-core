@@ -11,24 +11,33 @@
 
 namespace smalex86\webframework\core;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use smalex86\webframework\core\Server;
+
 /**
  * Description of Controller
  *
  * @author Alexandr Smirnov
  */
-abstract class Controller {
+abstract class Controller implements LoggerAwareInterface {
   
-  protected $logger = null;
+  use LoggerAwareTrait;
+  
   protected $mapper = null;
   protected $record = null;
   
   protected $mapperClass = '';
 
   protected $alias = '';
+  /**
+   * Объект приложения
+   * @var Server
+   */
+  protected $application;
 
-  public function __construct($alias = '') {
-    global $application;
-    $this->logger = $application->getLogger();
+  public function __construct(Server $application, $alias = '') {
+    $this->application = $application;
     if ($alias) {
       $this->alias = $alias;
     }

@@ -31,19 +31,17 @@ class StaticMenu extends ActiveRecord {
 
   /**
    * Данный статический метод создает экземпляр данного класса с указанными параметрами
-   * @param int $mid
+   * @param int $menuId
    * @param string $name
-   * @param string $alias
    * @param string $template
    * @param string $type
    * @param array $items
    * @return \smalex86\webframework\core\model\StaticComponent
    */
-  static public function newRecord($mid, $name, $alias, $template, $type, $items) {
+  static public function newRecord($menuId, $name, $template, $type, $items) {
     $record = new StaticMenu;
-    $record->mid = $mid;
+    $record->menuId = $menuId;
     $record->name = $name;
-    $record->alias = $alias;
     $record->template = $template;
     $record->type = $type;
     $record->items = $items;
@@ -62,10 +60,10 @@ class StaticMenu extends ActiveRecord {
   private function getTreeItemsMenu($items, $miid = 0) {
     $childs = 0;
     foreach ($items as $item) {
-      if ($item['parent_miid'] == $miid) {
+      if ($item['parent_id'] == $miid) {
         $this->itemsTree[] = $item;
         $childs++;
-        $this->itemsTree[count($this->itemsTree)-1]['childs'] = $this->getTreeItemsMenu($items, $item['miid']);
+        $this->itemsTree[count($this->itemsTree)-1]['childs'] = $this->getTreeItemsMenu($items, $item['id']);
       }
     }
     return $childs;
@@ -80,10 +78,10 @@ class StaticMenu extends ActiveRecord {
   private function getParentItemMenu($items, $parent_miid) {
     $miid = 0;
     foreach ($items as $item) {
-      if ($item['miid'] == $parent_miid) {   
-        $miid = $item['miid'];
-        if ($item['parent_miid']) {
-          if (!$miid2 = $this->getParentItemMenu($items, $item['parent_miid'])) { $miid = $miid2; }
+      if ($item['id'] == $parent_miid) {   
+        $miid = $item['id'];
+        if ($item['parent_id']) {
+          if (!$miid2 = $this->getParentItemMenu($items, $item['parent_id'])) { $miid = $miid2; }
         }
         break;
       }
@@ -100,13 +98,13 @@ class StaticMenu extends ActiveRecord {
     $miid = 0;
     $active = false;
     foreach ($items as $item) {
-      if (($item['itemlink']) && (strpos($_SERVER['REQUEST_URI'], $item['itemlink'], 0))) {
+      if (($item['link']) && (strpos($_SERVER['REQUEST_URI'], $item['link'], 0))) {
         // в случае если активный пункт меню вложенный, то установить active у корневого пункта
         $active = true;
-        if ($item['parent_miid']) {
-          $miid = $this->getParentItemMenu($items, $item['parent_miid']);
+        if ($item['parent_id']) {
+          $miid = $this->getParentItemMenu($items, $item['parent_id']);
         } else {
-          $miid = $item['miid'];
+          $miid = $item['id'];
           break;
         }    
       }
@@ -114,8 +112,8 @@ class StaticMenu extends ActiveRecord {
     // если пользователь находиться на главной, то присвоить пункту меню mainpage значение класса active
     if (!$active) {
       foreach ($items as $item) {
-        if ($item['itemalias'] == 'mainpage') {
-          $miid = $item['miid'];
+        if ($item['link'] == '' || $item['link'] == null) {
+          $miid = $item['id'];
         }
       }
     }            
@@ -143,15 +141,15 @@ class StaticMenu extends ActiveRecord {
       $data = '<ul class="dropdown-menu">';
     }
     foreach ($items as $item) {
-      if ($item['parent_miid'] == $miid) {
-        $data .= sprintf('<li class="%s%s%s">', ($item['miid'] == $miidActive) ? ' current active' : '',
-          (!$item['childs'] == 0) ? ' dropdown parent' : '', ($item['itemname'] == '-') ? ' divider': '');
-        if ($item['itemname'] <> '-') {
+      if ($item['parent_id'] == $miid) {
+        $data .= sprintf('<li class="%s%s%s">', ($item['id'] == $miidActive) ? ' current active' : '',
+          (!$item['childs'] == 0) ? ' dropdown parent' : '', ($item['name'] == '-') ? ' divider': '');
+        if ($item['name'] <> '-') {
           $data .= sprintf('<a%s href="%s">%s%s</a>', (!$item['childs'] == 0) ? ' class="dropdown-toggle" data-toggle="dropdown"' : '',
-            ($item['itemlink']) ? $item['itemlink'] : 'index.php', $item['itemname'], (!$item['childs'] == 0) ? '<b class="caret"></b>' : '');
+            ($item['link']) ? $item['link'] : 'index.php', $item['name'], (!$item['childs'] == 0) ? '<b class="caret"></b>' : '');
         }
         if ($item['childs'] > 0) {
-          $data .= $this->getTreeItemsMenuHTML($items, $miidActive, $item['miid']);
+          $data .= $this->getTreeItemsMenuHTML($items, $miidActive, $item['id']);
         }
         $data .= "</li>";
       }

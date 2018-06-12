@@ -20,10 +20,6 @@ use smalex86\webframework\core\model\StaticComponentMapper;
  * @author Alexandr Smirnov
  */
 class StaticController extends Controller {
-
-  public function __construct($alias = '') {
-    parent::__construct($alias);
-  }
    
   protected function getRecord() {
     if (!$this->record) {
@@ -34,7 +30,8 @@ class StaticController extends Controller {
   
   protected function getMapper() {
     if (!$this->mapper) {
-      $this->mapper = new StaticComponentMapper;
+      $this->mapper = new StaticComponentMapper($this->application->getDatabase(),
+              $this->application->getSession());
     }
     return $this->mapper;
   }
