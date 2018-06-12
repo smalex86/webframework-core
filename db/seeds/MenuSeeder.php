@@ -17,18 +17,21 @@ class MenuSeeder extends AbstractSeed
     {
       $data = [
         [
+          'id' => 1,
           'name' => 'main',
           'caption' => 'Главное меню',
           'type' => 'navbar',
           'template' => null
         ],
         [
+          'id' => 2,
           'name' => 'user',
           'caption' => 'Меню пользователя',
           'type' => 'nav',
           'template' => null
         ],
         [
+          'id' => 3,
           'name' => 'admin',
           'caption' => 'Меню админпанели',
           'type' => 'nav',
