@@ -45,4 +45,8 @@ $application->setLogger($logger);
 
 $userMapper = new smalex86\webframework\core\user\UserMapper($application->getDatabase(), $application->getSession());
 $user = $userMapper->getActiveUser();
+if (!$user) {
+  $user = new \smalex86\webframework\core\user\User(null, '', '', null, '', '', '', '', '', '', '', 
+          '', '');
+}
 $user->setApplication($application);

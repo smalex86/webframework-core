@@ -77,6 +77,9 @@ class UserGroup extends ActiveRecord {
    */
   public function getAccessList(): array
   {
+    if (!$this->id) {
+      return [];
+    }
     if (!$this->accessList) {
       if (!$this->application) {
         return null;
@@ -98,6 +101,9 @@ class UserGroup extends ActiveRecord {
    */
   public function isAdmin(): bool
   {
+    if (!$this->id) {
+      return false;
+    }
     // проверка инициализации списка правил доступа
     if (!$this->accessList) {
       // если при инициализации был получен null, то вернуть false

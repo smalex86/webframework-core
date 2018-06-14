@@ -110,6 +110,9 @@ class User extends ActiveRecord {
    */
   public function getUserGroup(): UserGroup
   {
+    if (!$this->id) {
+      return new UserGroup(null, null, null, null);
+    }
     if (!$this->group) {
       if (!$this->application) {
         return null;
@@ -117,7 +120,9 @@ class User extends ActiveRecord {
         $userGroupMapper = new UserGroupMapper($this->application->getDatabase(), 
                 $this->application->getSession());
         $this->group = $userGroupMapper->getById($this->groupId);
-        $this->group->setApplication($this->application);
+        if ($this->group) {
+          $this->group->setApplication($this->application);
+        }
       }
     }
     return $this->group;
