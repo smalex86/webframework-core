@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\controller\page;
+namespace smalex86\webframework\core\packageStatic\controller;
 
 use smalex86\webframework\core\Controller;
-use smalex86\webframework\core\model\StaticPageMapper;
+use smalex86\webframework\core\packageStatic\dataMapper\Menu as MenuMapper;
 
 /**
  * Description of Static
  *
  * @author Alexandr Smirnov
  */
-class StaticController extends Controller {
+class Menu extends Controller {
    
   protected function getRecord() {
     if (!$this->record) {
@@ -30,29 +30,27 @@ class StaticController extends Controller {
   
   protected function getMapper() {
     if (!$this->mapper) {
-      $this->mapper = new StaticPageMapper($this->application->getDatabase(),
+      $this->mapper = new MenuMapper($this->application->getDatabase(),
               $this->application->getSession());
+      $this->mapper->setLogger($this->logger);
     }
     return $this->mapper;
   }
   
   public function getBody() {
     if ($this->getRecord()) {
-      $data = '<div class="page-header">';
-      $data .= sprintf('<h1>%s</h1>', $this->getRecord()->pageName);
-      $data .= '</div>';
-      $data .= $this->getRecord()->pageText;
+      $data = $this->getRecord()->getMenu();
     } else {
-      $data = 'Запрашиваемая страница не найдена';
+      $data = 'Запрашиваемое меню не найдено';
     }
     return $data;
   }
   
   public function getTitle() {
     if ($this->getRecord()) {
-      return $this->getRecord()->pageTitle;
+      return $this->getRecord()->name;
     }
-    return 'Страница не найдена';
+    return 'Меню не найдено';
   }
   
 }

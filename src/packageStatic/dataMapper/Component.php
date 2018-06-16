@@ -9,18 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\model;
+namespace smalex86\webframework\core\packageStatic\dataMapper;
 
-use smalex86\webframework\core\DataMapper;
-use smalex86\webframework\core\model\StaticComponent;
-use smalex86\webframework\core\ActiveRecord;
+use smalex86\webframework\core\{DataMapper, ActiveRecord};
+use smalex86\webframework\core\packageStatic\activeRecord\Component as ComponentRecord;
 
 /**
- * Description of StaticComponentMapper
+ * Description of Component
  *
- * @author Александр
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class StaticComponentMapper extends DataMapper {
+class Component extends DataMapper {
   
    /**
    * метод возвращает название таблицы данных
@@ -55,7 +54,7 @@ class StaticComponentMapper extends DataMapper {
     $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row) {
-      return StaticComponent::newRecord($row['comid'], $row['name'], $row['text'], $row['filename']);
+      return ComponentRecord::newRecord($row['comid'], $row['name'], $row['text'], $row['filename']);
     }
     return null;
   }

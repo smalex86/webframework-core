@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\model;
+namespace smalex86\webframework\core\packageStatic\activeRecord;
 
 use smalex86\webframework\core\ActiveRecord;
 
 /**
- * Description of StaticComponent
+ * Description of Component
  *
  * @author Alexandr Smirnov
  */
-class StaticComponent extends ActiveRecord {
+class Component extends ActiveRecord {
   
   public $comid;
   public $name;
@@ -31,10 +31,10 @@ class StaticComponent extends ActiveRecord {
    * @param string $name
    * @param string $text
    * @param string $filename
-   * @return \smalex86\webframework\core\model\StaticComponent
+   * @return \smalex86\webframework\core\packageStatic\activeRecord\Component
    */
   static public function newRecord($comid, $name, $text, $filename) {
-    $record = new StaticComponent;
+    $record = new Component;
     $record->comid = $comid;
     $record->name = $name;
     $record->text = $text;

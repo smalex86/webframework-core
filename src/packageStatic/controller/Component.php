@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\controller\menu;
+namespace smalex86\webframework\core\packageStatic\controller;
 
 use smalex86\webframework\core\Controller;
-use smalex86\webframework\core\model\StaticMenuMapper;
+use smalex86\webframework\core\packageStatic\dataMapper\Component as ComponentMapper;
 
 /**
- * Description of Static
+ * Description of Component
  *
  * @author Alexandr Smirnov
  */
-class StaticController extends Controller {
+class Component extends Controller {
    
   protected function getRecord() {
     if (!$this->record) {
@@ -30,18 +30,17 @@ class StaticController extends Controller {
   
   protected function getMapper() {
     if (!$this->mapper) {
-      $this->mapper = new StaticMenuMapper($this->application->getDatabase(),
+      $this->mapper = new ComponentMapper($this->application->getDatabase(),
               $this->application->getSession());
-      $this->mapper->setLogger($this->logger);
     }
     return $this->mapper;
   }
   
   public function getBody() {
     if ($this->getRecord()) {
-      $data = $this->getRecord()->getMenu();
+      $data = $this->getRecord()->text;
     } else {
-      $data = 'Запрашиваемое меню не найдено';
+      $data = 'Запрашиваемый компонент не найден';
     }
     return $data;
   }
@@ -50,7 +49,7 @@ class StaticController extends Controller {
     if ($this->getRecord()) {
       return $this->getRecord()->name;
     }
-    return 'Меню не найдено';
+    return 'Компонент не найден';
   }
   
 }
