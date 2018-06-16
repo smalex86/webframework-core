@@ -24,6 +24,14 @@ abstract class Controller implements LoggerAwareInterface {
   
   use LoggerAwareTrait;
   
+  /**
+   * Список классов представлений для различных action
+   * Набор данных вида: ['action' => 'viewClass']
+   * 
+   * @var array 
+   */
+  protected $viewList = [];
+  
   protected $mapper = null;
   protected $record = null;
   
@@ -41,6 +49,17 @@ abstract class Controller implements LoggerAwareInterface {
     if ($alias) {
       $this->alias = $alias;
     }
+  }
+  
+  /**
+   * Задать список классов представлений для различных action
+   * Перезаписывает настройки представлений
+   * Набор данных вида: ['action' => 'viewClass']
+   * 
+   * @param array $viewList Список представлений
+   */
+  public function mergeViewList(array $viewList) {
+    $this->viewList = array_merge($this->viewList, $viewList);
   }
   
   /**
