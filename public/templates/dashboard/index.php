@@ -70,10 +70,10 @@
     </div>
   </div>
   <?php else: ?>	
-    <p><center><strong>Необходимо выполнить вход под учетной записью администратора</center></strong></p>
-    <div class="container" style="max-width: 330px;">
+    <p class="text-center"><strong>Необходимо выполнить вход под учетной записью администратора</strong></p>
+    <div class="container">
       <?php echo $application->getSession()->checkPostMsg() ?>
-      <?php //echo $application->getComponent('user', array('user'), true); ?>
+      <?php echo $application->getComponent('user', 'login', array('user'), true); ?>
     </div>
   <?php endif; ?>
 </body>

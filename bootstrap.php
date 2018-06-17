@@ -43,10 +43,11 @@ $database = new smalex86\webframework\core\Database(
 $application = new smalex86\webframework\core\Server($configObj, $database);
 $application->setLogger($logger);
 
-$userMapper = new smalex86\webframework\core\user\UserMapper($application->getDatabase(), $application->getSession());
+$userMapper = new smalex86\webframework\core\user\dataMapper\User($application->getDatabase(), 
+        $application->getSession());
 $user = $userMapper->getActiveUser();
 if (!$user) {
-  $user = new \smalex86\webframework\core\user\User(null, '', '', null, '', '', '', '', '', '', '', 
-          '', '');
+  $user = new \smalex86\webframework\core\user\activeRecord\User(null, '', '', null, '', '', '', 
+          '', '', '', '', '', '');
 }
 $user->setApplication($application);

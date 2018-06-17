@@ -55,7 +55,7 @@ $config['controller'] = [
     ],
     // user
     [
-        'name' => 'User',
+        'name' => 'user',
         'type' => 'component',
         'class' => 'smalex86\\webframework\\core\\user\\controller\\User',
         'action' => [

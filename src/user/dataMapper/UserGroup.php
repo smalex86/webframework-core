@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\user;
+namespace smalex86\webframework\core\user\dataMapper;
 
 use smalex86\webframework\core\{ActiveRecord, DataMapper};
+use smalex86\webframework\core\user\activeRecord\UserGroup as UserGroupRecord;
 
 /**
- * Description of UserGroupMapper
+ * UserGroup Mapper
  *
  * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class UserGroupMapper extends DataMapper {
+class UserGroup extends DataMapper {
   
   protected $tableName = 'core_user_group';
   
@@ -34,7 +35,7 @@ class UserGroupMapper extends DataMapper {
     $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row && is_array($row)) {
-      return new UserGroup($row['id'], $row['parent_id'], $row['name'], $row['description']);
+      return new UserGroupRecord($row['id'], $row['parent_id'], $row['name'], $row['description']);
     }
     return null;
   }

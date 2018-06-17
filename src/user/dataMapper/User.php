@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\user;
+namespace smalex86\webframework\core\user\dataMapper;
 
 use smalex86\webframework\core\{ActiveRecord, Database, DataMapper, Session};
+use smalex86\webframework\core\user\activeRecord\User as UserRecord;
 
 /**
- * UserMapper
+ * User DataMapper
  *
  * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class UserMapper extends DataMapper {
+class User extends DataMapper {
   
   public function __construct(Database $database, Session $session) {
     parent::__construct($database, $session);
@@ -36,13 +37,13 @@ class UserMapper extends DataMapper {
   /**
    * Возвращает данные о пользователе по его идентификатору из бд
    * @param int $id
-   * @return \smalex86\webframework\core\User
+   * @return \smalex86\webframework\core\user\activeRecord\User
    */
   public function getById(int $id) {
     $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row && is_array($row)) {
-      return new User($row['id'], $row['u_login'], $row['u_password'], $row['user_group_id'], 
+      return new UserRecord($row['id'], $row['u_login'], $row['u_password'], $row['user_group_id'], 
               $row['name_f'], $row['name_m'], $row['name_l'], $row['email'], 
               $row['email_verification_code'], $row['email_verified'], $row['registration_date'], 
               $row['avatar'], $row['phone']);
@@ -52,7 +53,7 @@ class UserMapper extends DataMapper {
   
   /**
    * Получает данные о пользователе сохраненном в сессии
-   * @return \smalex86\webframework\core\User
+   * @return \smalex86\webframework\core\user\activeRecord\User
    */
   public function getActiveUser() {
     $userSessionData = $this->session->getData('user');
@@ -72,7 +73,7 @@ class UserMapper extends DataMapper {
   
   /**
    * Сохранение объекта в базе данных
-   * @param User $record
+   * @param \smalex86\webframework\core\user\activeRecord\User $record
    * @return 
    */
   public function save(ActiveRecord $record) {

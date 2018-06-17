@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\user;
+namespace smalex86\webframework\core\user\dataMapper;
 
 use smalex86\webframework\core\{ActiveRecord, DataMapper};
-use smalex86\webframework\core\user\UserGroupAccess;
+use smalex86\webframework\core\user\activeRecord\UserGroupAccess as UserGroupAccessRecord;
 
 /**
- * Description of UserGroupAccessMapper
+ * UserGroupAccess Mapper
  *
  * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class UserGroupAccessMapper extends DataMapper {
+class UserGroupAccess extends DataMapper {
   
   protected $tableName = 'core_user_group_access';
   
@@ -35,7 +35,7 @@ class UserGroupAccessMapper extends DataMapper {
     $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row && is_array($row)) {
-      return new UserGroupAccess($row['id'], $row['user_group_id'], $row['object_name'], 
+      return new UserGroupAccessRecord($row['id'], $row['user_group_id'], $row['object_name'], 
               $row['object_id'], $row['a_admin'], $row['a_read'], $row['a_write']);
     }
     return null;
@@ -57,7 +57,7 @@ class UserGroupAccessMapper extends DataMapper {
       if (is_array($rules)) {
         foreach ($rules as $objectName=>$objectList) {
           foreach ($objectList as $objectId=>$object) {
-            $groupAccessList[] = new UserGroupAccess($object['id'], $object['user_group_id'], 
+            $groupAccessList[] = new UserGroupAccessRecord($object['id'], $object['user_group_id'], 
                     $objectName, $objectId, $object['a_admin'], $object['a_read'], 
                     $object['a_write']);
           }

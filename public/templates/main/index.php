@@ -46,6 +46,26 @@
   </head>
 
 <body>
+    
+  <div class="navbar navbar-default" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Навигация</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.php" title="<?php echo $application->getSiteName() ?>"><?php echo $application->getSiteName() ?></a>
+      </div>
+              <div class='navbar-collapse collapse'>
+                <?php 
+                  echo $application->getMenu('main');
+                  echo $application->getComponent('user');
+                ?>
+              </div><!--/.navbar-collapse -->
+    </div>
+  </div>
 
   <div class="container" role="main">
       <div class="row">
@@ -55,7 +75,7 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <h1><?php echo $application->getPageTitle(); ?></h1>
+          <!--<h1><?php echo $application->getPageTitle(); ?></h1>-->
           <?php echo $application->getPageContent(); ?>
         </div>  
       </div>

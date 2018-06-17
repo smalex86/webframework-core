@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\user;
+namespace smalex86\webframework\core\user\activeRecord;
 
 use smalex86\webframework\core\ActiveRecord;
 use smalex86\webframework\core\Server;
-use smalex86\webframework\core\user\{UserGroup, UserGroupMapper};
+use smalex86\webframework\core\user\activeRecord\UserGroup;
+use smalex86\webframework\core\user\dataMapper\UserGroup as UserGroupMapper;
 
 /**
  * User
