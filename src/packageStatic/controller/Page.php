@@ -17,10 +17,15 @@ use smalex86\webframework\core\packageStatic\dataMapper\Page as PageMapper;
 /**
  * Description of Page
  *
- * @author Alexandr Smirnov
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
 class Page extends Controller {
-   
+  
+  protected $configViewList = [
+      'error404' => 'smalex86\\webframework\\core\\packageStatic\\view\\Page404',
+      'view' => 'smalex86\\webframework\\core\\packageStatic\\view\\Page'
+  ];
+
   protected function getRecord() {
     if (!$this->record) {
       $this->record = $this->getMapper()->getByAlias($this->getAlias());
@@ -37,22 +42,21 @@ class Page extends Controller {
   }
   
   public function getBody() {
-    if ($this->getRecord()) {
-      $data = '<div class="page-header">';
-      $data .= sprintf('<h1>%s</h1>', $this->getRecord()->pageName);
-      $data .= '</div>';
-      $data .= $this->getRecord()->pageText;
+    if (isset($this->configViewList[$this->action]) && $this->getRecord()) {
+      $data = $this->getView($this->action)->getView([
+          'title' => $this->getRecord()->title, 
+          'body' => $this->getRecord()->text]);
     } else {
-      $data = '404 - Запрашиваемая страница не найдена';
+      $data = $this->getView('error404')->getView([]);
     }
     return $data;
   }
   
   public function getTitle() {
-    if ($this->getRecord()) {
-      $title = $this->getRecord()->pageTitle;
+    if (isset($this->configViewList[$this->action]) && $this->getRecord()) {
+      $title = $this->getView($this->action)->getTitle(['title' => $this->getRecord()->title]);
     } else {
-      $title = '404 Страница не найдена';
+      $title = $this->getView('error404')->getTitle([]);
     }
     return $title;
   }
