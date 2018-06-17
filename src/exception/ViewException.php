@@ -14,10 +14,14 @@ namespace smalex86\webframework\core\exception;
 use smalex86\webframework\core\exception\BaseException;
 
 /**
- * Класс исключения, связанный с работой контроллеров
+ * Класс исключения, связанный с работой представления
  *
  * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class ControllerException extends BaseException {
+class ViewException extends BaseException {
+  
+  public function __construct(string $message = "", int $code = 0, \Throwable $previous = null) {
+    parent::__construct($message, $code, $previous);
+  }
   
 }

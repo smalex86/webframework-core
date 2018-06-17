@@ -197,12 +197,13 @@ class Server implements LoggerAwareInterface {
    * Универсальный метод для получения содержимого компонентов, меню и прочих объектов страницы
    * @param string $type тип компонента: component, menu
    * @param string $alias алиас требуемого компонента
+   * @param string $action параметр для идентификации представления/действия компонента
    * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
-   * @param int $position дополнительный параметр компонента
    * @return string
    */
-  protected function getAnyComponent($type, $alias, $pages = array(), $inverse = false, $position = 0) {
+  protected function getAnyComponent($type, $alias, $action = 'view', $pages = array(), 
+          $inverse = false) {
     //проверить введен ли массив страниц
     if ($pages) {
       // если введен, то проверить не входит ли текущая страница в этот массив + inverse
@@ -223,7 +224,7 @@ class Server implements LoggerAwareInterface {
     } 
     // если контроллер в массиве не найден, то вызываем поиск контроллера
     if (!$componentController) {
-      $componentController = $this->getController($type, $alias);
+      $componentController = $this->getController($type, $alias, $action);
       // если контроллер найден и создан, то добавляем его в массив контроллеров компонентов
       if ($componentController) {
         $this->componentControllers[] = $componentController;
@@ -240,13 +241,14 @@ class Server implements LoggerAwareInterface {
   /**
    * Метод возвращает содержимое компонента
    * @param string $alias алиас требуемого компонента
+   * @param string $action параметр для идентификации представления/действия компонента
    * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
    * @param int $position дополнительный параметр компонента
    * @return string
    */
-  public function getComponent($alias, $pages = array(), $inverse = false, $position = 0) {
-    return $this->getAnyComponent('component', $alias, $pages, $inverse, $position);
+  public function getComponent($alias, $action = 'view', $pages = array(), $inverse = false) {
+    return $this->getAnyComponent('component', $alias, $action, $pages, $inverse);
   }
   
   /**
@@ -257,7 +259,7 @@ class Server implements LoggerAwareInterface {
    * @return type
    */
   public function getMenu($alias, $pages = array(), $inverse = false) {
-    return $this->getAnyComponent('menu', $alias, $pages, $inverse);
+    return $this->getAnyComponent('menu', $alias, 'view', $pages, $inverse);
   }
   
   /**
@@ -338,8 +340,8 @@ class Server implements LoggerAwareInterface {
    * Получить объект контроллера
    * 
    * @param string $type
-   * @param string $name
-   * @param string $action
+   * @param string $name Атрибут 'page' из uri
+   * @param string $action Атрибут 'action' из uri
    * @return Controller
    * @throws ControllerException
    */
@@ -362,7 +364,10 @@ class Server implements LoggerAwareInterface {
       $controllerConfig = $this->findControllerConfigIn($controllerConfigList, $name, $action);
     }
     try {
-      $controller = new $controllerConfig['class']($this, $alias);
+      if ($action == '') {
+        $action = 'view';
+      }
+      $controller = new $controllerConfig['class']($this, $alias, $action);
       $controller->setLogger($this->logger);
       $controller->mergeViewList($controllerConfig['action']);
       return $controller;
