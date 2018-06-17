@@ -118,7 +118,8 @@ class Core extends AbstractMigration
       $tablePageSection = $this->table('core_page_section', 
               ['comment' => 'Таблица с разделами страниц']);
       $tablePageSection->addColumn('name', 'string', ['null' => false, 
-                  'comment' => 'Название группы'])
+                  'comment' => 'Название группы (алиас)'])
+              ->addColumn('caption', 'string', ['null' => true, 'comment' => 'Заголовок'])
               ->addColumn('description', 'string', ['null' => true, 'comment' => 'Описание'])
               ->create();
       /**
