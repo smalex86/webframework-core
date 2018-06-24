@@ -52,5 +52,9 @@ class Menu extends Controller {
     }
     return 'Меню не найдено';
   }
-  
+
+  public function processAction(array $data) {
+    return ;
+  }
+
 }

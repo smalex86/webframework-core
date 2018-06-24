@@ -51,5 +51,9 @@ class Component extends Controller {
     }
     return 'Компонент не найден';
   }
-  
+
+  public function processAction(array $data) {
+    return ;
+  }
+
 }

@@ -60,5 +60,9 @@ class Page extends Controller {
     }
     return $title;
   }
-  
+
+  public function processAction(array $data) {
+    return;
+  }
+
 }
