@@ -45,6 +45,7 @@ $application->setLogger($logger);
 
 $userMapper = new smalex86\webframework\core\user\dataMapper\User($application->getDatabase(), 
         $application->getSession());
+$userMapper->setLogger($logger);
 $user = $userMapper->getActiveUser();
 if (!$user) {
   $user = new \smalex86\webframework\core\user\activeRecord\User(null, '', '', null, '', '', '', 
