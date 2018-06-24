@@ -48,5 +48,10 @@ class FunctionList {
   static public function getCurrentUrl() {
     return self::getServerProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
   }
+  
+  
+  static public function getScriptName() {
+    return $_SERVER['SCRIPT_NAME'];
+  }
    
 }

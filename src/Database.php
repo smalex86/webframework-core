@@ -82,6 +82,21 @@ class Database {
   }
   
   /**
+   * Выполняет обработку массива строк для обезопасивания перед вставкой в sql запрос
+   * @param array $data
+   * @return array
+   */
+  public function getSafetyStringList(array $data): array
+  {
+    foreach ($data as $key=>$value) {
+      if (is_string($value)) {
+        $data[$key] = $this->getSafetyString($value);
+      }
+    }
+    return $data;
+  }
+  
+  /**
    * Метод выполняет обращение к базе данных, результатом которого является единственная строка
    * @param string $query запрос
    * @param string $place место, из которого он вызывается

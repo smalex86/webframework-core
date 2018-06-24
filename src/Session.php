@@ -23,6 +23,15 @@ class Session implements LoggerAwareInterface {
   
   use \Psr\Log\LoggerAwareTrait;
   
+  /** Сообщение об успехе */
+  const ALERT_SUCCESS = 'alert-success';
+  /** Сообщение для информации */
+  const ALERT_INFO = 'alert-info';
+  /** Сообщение об предупреждении */
+  const ALERT_WARNING = 'alert-warning';
+  /** Сообщение об ошибке */
+  const ALERT_DANGER = 'alert-danger';
+  
   public function __construct() {
     session_start();
   }
@@ -164,7 +173,7 @@ class Session implements LoggerAwareInterface {
         }
         if ($value['url'] == Functions::getCurrentUrl()) {
           // если url текущей страницы = $value['url'], то выводим сообщение
-          $postMsg .= $this->getMsgHTMLbyMsg($value['msg'], @$value['status'], $field);
+          $postMsg .= $this->getMsgHTMLbyMsg($value['msg'], $value['status'], $field);
         } else {
           // если пользователь ушел со страницы $_SESSION['postMsg'][$field]['url'], то удаляем этот массив
           unset($_SESSION['postMsg'][$field]);
@@ -185,10 +194,10 @@ class Session implements LoggerAwareInterface {
   /**
    * сохранение сообщений о выполнении обработчиков post
    * @param string $msg
-   * @param int $status
-   * @param string $url
+   * @param string $status статус сообщения = константа из списка ALERT
+   * @param string $url если не указан, то url текущей страницы
    */
-  public function setPostMessageToSession($msg, $status, $url = '') {
+  public function setPostMessageToSession(string $msg, string $status, string $url = '') {
     // в сессию записать адрес страницы и сообщение
     // когда пользователь уйдет с данной страницы надо будет удалить массив postMsg - 
     // данная проверка выполняется при выводе страницы
@@ -196,7 +205,7 @@ class Session implements LoggerAwareInterface {
       $url = ($url) ? $url : Functions::getCurrentUrl();
       // проверка на наличие такого же сообщения в массиве session
       $add = 1;
-      if (is_array(@$_SESSION['postMsg'])) {
+      if (isset($_SESSION['postMsg']) && is_array($_SESSION['postMsg'])) {
         foreach ($_SESSION['postMsg'] as $value) {
           if ($value['url'] == $url && $value['msg'] == $msg && $value['status'] == $status) {
             $add = 0;
@@ -226,14 +235,15 @@ class Session implements LoggerAwareInterface {
   
   /**
    * возвращает сообщение в зависимости от msg и status
-   * @param string $msg
-   * @param int $status
-   * @param int $id
+   * @param string $msg сообщение
+   * @param string $status статус сообщения = константа из списка констант ALERT данного класса
+   * @param int $id идентификатор сообщения
    * @return string
    */
-  private function getMsgHTMLbyMsg($msg, $status, $id = 0) {
+  private function getMsgHTMLbyMsg(string $msg, string $status, int $id = 0): string
+  {
     if ($msg) {
-      $data = sprintf("<div class='alert %s'>", ($status == 1) ? 'alert-success' : 'alert-danger');
+      $data = sprintf("<div class='alert %s'>", $status);
       $data .= sprintf('<button type="button" class="close" data-dismiss="alert" msgId="%u">'
               . '<span aria-hidden="true">&times;</span>'
               . '<span class="sr-only">Close</span></button>', $id);

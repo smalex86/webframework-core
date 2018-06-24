@@ -13,7 +13,7 @@ namespace smalex86\webframework\core;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use smalex86\webframework\core\{Server, View};
+use smalex86\webframework\core\{Server, View, Session, Database};
 use smalex86\webframework\core\exception\ControllerException;
 
 /**
@@ -58,9 +58,21 @@ abstract class Controller implements LoggerAwareInterface {
    * @var Server
    */
   protected $application;
+  /**
+   * Объект сессии
+   * @var Session
+   */
+  protected $session;
+  /**
+   * Объект базы данных
+   * @var Database
+   */
+  protected $database;
 
   public function __construct(Server $application, $alias = '', $action = 'view') {
     $this->application = $application;
+    $this->session = $application->getSession();
+    $this->database = $application->getDatabase();
     $this->alias = $alias;
     $this->action = $action;
   }
@@ -95,8 +107,11 @@ abstract class Controller implements LoggerAwareInterface {
    * @return View
    * @throws ControllerException
    */
-  protected function getView(string $name): View
+  protected function getView(string $name = ''): View
   {
+    if (!$name) {
+      $name = $this->action;
+    }
     if (isset($this->viewList[$name])) {
       return $this->viewList[$name];
     } else {
@@ -118,6 +133,11 @@ abstract class Controller implements LoggerAwareInterface {
       }
     }
   }
+  
+  /**
+   * Выполнить обработку пост-данных
+   */
+  abstract public function processAction(array $data);
   
   /**
    * Метод возвращает DataMapper контроллера

@@ -198,7 +198,7 @@ class Server implements LoggerAwareInterface {
    * @param string $type тип компонента: component, menu
    * @param string $alias алиас требуемого компонента
    * @param string $action параметр для идентификации представления/действия компонента
-   * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
+   * @param string[] $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
    * @return string
    */
@@ -211,7 +211,7 @@ class Server implements LoggerAwareInterface {
         return '';
       }
     }
-    // если уже существует массив в контроллерами компонентов, выполнить поиск среди них
+    // если уже существует массив с контроллерами компонентов, выполнить поиск среди них
     $componentController = null;
     if (count($this->componentControllers)) {
       foreach ($this->componentControllers as $controller) {
@@ -242,9 +242,8 @@ class Server implements LoggerAwareInterface {
    * Метод возвращает содержимое компонента
    * @param string $alias алиас требуемого компонента
    * @param string $action параметр для идентификации представления/действия компонента
-   * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
+   * @param string[] $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
-   * @param int $position дополнительный параметр компонента
    * @return string
    */
   public function getComponent($alias, $action = 'view', $pages = array(), $inverse = false) {
@@ -277,27 +276,13 @@ class Server implements LoggerAwareInterface {
    */
   public function startActionManager() {
     if ($_POST) {
-      foreach ($_POST as $field => $value) {
-        $this->logger->debug('Данные = '.var_export($value, true));
-        if (is_array($value)) {
-          // подключение требуемой библиотеки
-          $className = $this->namespace . '\\' . $field;
-          $this->logger->debug('Класс = '.$className);
-          $this->logger->debug('class exists = '.class_exists($className)); 
-          if (class_exists($className)) {
-            $obj = new $className;
-            if ($obj && method_exists($obj, 'processAction')) {
-              $obj->processAction($value);
-            } else {
-              $this->logger->warning('Класс '.$className.
-                      ' не имеет метода processAction, данные ('.var_export($value, true).
-                      ') не будут обработаны');
-            }
-          } else {
-            $this->logger->warning('Класс '.$className.
-                    ' не найден, данные ('.var_export($value, true).
-                    ') не будут обработаны');
-          }
+      foreach ($_POST as $controllerName => $data) {
+        $this->logger->debug('ControllerName = '.$controllerName.', данные = '
+                .var_export($data, true));
+        if (is_array($data)) {
+          $data = $this->database->getSafetyStringList($data);
+          $controller = $this->getController('page', $controllerName, 'post');
+          $controller->processAction($data);
         }
       }
       // чтобы снова не вызывался обработчик массива пост, очищаем его
@@ -348,6 +333,7 @@ class Server implements LoggerAwareInterface {
   protected function getControllerFromConfigList(string $type, string $name, 
           string $action): Controller
   {
+    $this->logger->debug('Входные данные: type = '.$type.', name = '.$name.', action = '.$action);
     $controllerConfigList = $this->getControllerConfigList($type);
     if (!$controllerConfigList || empty($controllerConfigList)) {
       $msg = 'Not found controller configs by type "' . $type . '"';
@@ -367,6 +353,9 @@ class Server implements LoggerAwareInterface {
       if ($action == '') {
         $action = 'view';
       }
+      $this->logger->debug('Создание объекта контроллера, данные: ' 
+              . var_export($controllerConfig, true) . ', alias = ' . $alias . ', action = ' 
+              . $action);
       $controller = new $controllerConfig['class']($this, $alias, $action);
       $controller->setLogger($this->logger);
       $controller->mergeViewList($controllerConfig['action']);
