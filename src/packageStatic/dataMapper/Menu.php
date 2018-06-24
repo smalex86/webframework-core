@@ -9,32 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\model;
+namespace smalex86\webframework\core\packageStatic\dataMapper;
 
-use smalex86\webframework\core\DataMapper;
-use smalex86\webframework\core\model\StaticPage;
-use smalex86\webframework\core\ActiveRecord;
+use smalex86\webframework\core\{DataMapper, ActiveRecord};
+use smalex86\webframework\core\packageStatic\activeRecord\Menu as MenuRecord;
 
 /**
- * Description of StaticPageMapper
+ * Description of Menu
  *
- * @author Александр
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class StaticPageMapper extends DataMapper {
+class Menu extends DataMapper {
   
    /**
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'core_page';
+    return 'core_menu';
   }
   
   /**
    * возвращает список полей таблицы
    */
   protected function getFields() {
-    return array('id', 'page_section_id', 'alias', 'link', 'title', 'name', 'teaser', 
-        'text', 'date_create', 'date_public', 'date_update', 'published');
+    return array();
   }
   
   /**
@@ -53,12 +51,17 @@ class StaticPageMapper extends DataMapper {
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where alias = "%s" limit 1', $this->getTableName(), $alias);
+    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row) {
-      return StaticPage::newRecord($row['id'], $row['page_section_id'], $row['alias'], $row['link'], 
-              $row['title'], $row['name'], $row['teaser'], $row['text'], $row['date_create'],
-              $row['date_public'], $row['date_update'], $row['published']);
+    if ($row && isset($row['id'])) {
+      // загрузить пункты меню
+      $query = sprintf('select * from core_menu_item where menu_id = %u', $row['id']);
+      $items = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
+      if (is_array($items)) {
+        return MenuRecord::newRecord($row['id'], $row['name'], $row['template'], $row['type'], 
+                $items);
+      }
+      return null;
     }
     return null;
   }

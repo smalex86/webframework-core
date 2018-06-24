@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\controller\page;
+namespace smalex86\webframework\core\packageStatic\controller;
 
 use smalex86\webframework\core\Controller;
-use smalex86\webframework\core\model\StaticPageMapper;
+use smalex86\webframework\core\packageStatic\dataMapper\Component as ComponentMapper;
 
 /**
- * Description of Static
+ * Description of Component
  *
  * @author Alexandr Smirnov
  */
-class StaticController extends Controller {
+class Component extends Controller {
    
   protected function getRecord() {
     if (!$this->record) {
@@ -30,7 +30,7 @@ class StaticController extends Controller {
   
   protected function getMapper() {
     if (!$this->mapper) {
-      $this->mapper = new StaticPageMapper($this->application->getDatabase(),
+      $this->mapper = new ComponentMapper($this->application->getDatabase(),
               $this->application->getSession());
     }
     return $this->mapper;
@@ -38,21 +38,22 @@ class StaticController extends Controller {
   
   public function getBody() {
     if ($this->getRecord()) {
-      $data = '<div class="page-header">';
-      $data .= sprintf('<h1>%s</h1>', $this->getRecord()->pageName);
-      $data .= '</div>';
-      $data .= $this->getRecord()->pageText;
+      $data = $this->getRecord()->text;
     } else {
-      $data = 'Запрашиваемая страница не найдена';
+      $data = 'Запрашиваемый компонент не найден';
     }
     return $data;
   }
   
   public function getTitle() {
     if ($this->getRecord()) {
-      return $this->getRecord()->pageTitle;
+      return $this->getRecord()->name;
     }
-    return 'Страница не найдена';
+    return 'Компонент не найден';
   }
-  
+
+  public function processAction(array $data) {
+    return ;
+  }
+
 }

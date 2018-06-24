@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\model;
+namespace smalex86\webframework\core\packageStatic\activeRecord;
 
 use smalex86\webframework\core\ActiveRecord;
 
 /**
- * StaticMenu Active Record
+ * Menu Active Record
  *
  * @author Alexandr Smirnov
  */
-class StaticMenu extends ActiveRecord {
+class Menu extends ActiveRecord {
   
   public $mid;
   public $name;
@@ -36,10 +36,10 @@ class StaticMenu extends ActiveRecord {
    * @param string $template
    * @param string $type
    * @param array $items
-   * @return \smalex86\webframework\core\model\StaticComponent
+   * @return \smalex86\webframework\core\packageStatic\activeRecord\Menu
    */
   static public function newRecord($menuId, $name, $template, $type, $items) {
-    $record = new StaticMenu;
+    $record = new Menu;
     $record->menuId = $menuId;
     $record->name = $name;
     $record->template = $template;

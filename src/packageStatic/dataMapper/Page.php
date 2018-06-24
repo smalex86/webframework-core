@@ -9,31 +9,31 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\model;
+namespace smalex86\webframework\core\packageStatic\dataMapper;
 
-use smalex86\webframework\core\DataMapper;
-use smalex86\webframework\core\model\StaticMenu;
-use smalex86\webframework\core\ActiveRecord;
+use smalex86\webframework\core\{DataMapper, ActiveRecord};
+use smalex86\webframework\core\packageStatic\activeRecord\Page as PageRecord;
 
 /**
- * Description of StaticMenuMapper
+ * Description of Page
  *
- * @author Александр
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class StaticMenuMapper extends DataMapper {
+class Page extends DataMapper {
   
    /**
    * метод возвращает название таблицы данных
    */
   protected function getTableName() {
-    return 'core_menu';
+    return 'core_page';
   }
   
   /**
    * возвращает список полей таблицы
    */
   protected function getFields() {
-    return array();
+    return array('id', 'page_section_id', 'alias', 'link', 'title', 'name', 'teaser', 
+        'text', 'date_create', 'date_public', 'date_update', 'published');
   }
   
   /**
@@ -52,17 +52,12 @@ class StaticMenuMapper extends DataMapper {
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
+    $query = sprintf('select * from %s where alias = "%s" limit 1', $this->getTableName(), $alias);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row && isset($row['id'])) {
-      // загрузить пункты меню
-      $query = sprintf('select * from core_menu_item where menu_id = %u', $row['id']);
-      $items = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
-      if (is_array($items)) {
-        return StaticMenu::newRecord($row['id'], $row['name'], $row['template'], $row['type'], 
-                $items);
-      }
-      return null;
+    if ($row) {
+      return PageRecord::newRecord($row['id'], $row['page_section_id'], $row['alias'], $row['link'], 
+              $row['title'], $row['name'], $row['teaser'], $row['text'], $row['date_create'],
+              $row['date_public'], $row['date_update'], $row['published']);
     }
     return null;
   }

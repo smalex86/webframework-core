@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace smalex86\webframework\core\user;
+namespace smalex86\webframework\core\user\activeRecord;
 
 use smalex86\webframework\core\ActiveRecord;
 use smalex86\webframework\core\Server;
-use smalex86\webframework\core\user\{UserGroup, UserGroupMapper};
+use smalex86\webframework\core\user\activeRecord\UserGroup;
+use smalex86\webframework\core\user\dataMapper\UserGroup as UserGroupMapper;
 
 /**
  * User
@@ -110,6 +111,9 @@ class User extends ActiveRecord {
    */
   public function getUserGroup(): UserGroup
   {
+    if (!$this->id) {
+      return new UserGroup(null, null, null, null);
+    }
     if (!$this->group) {
       if (!$this->application) {
         return null;
@@ -117,7 +121,9 @@ class User extends ActiveRecord {
         $userGroupMapper = new UserGroupMapper($this->application->getDatabase(), 
                 $this->application->getSession());
         $this->group = $userGroupMapper->getById($this->groupId);
-        $this->group->setApplication($this->application);
+        if ($this->group) {
+          $this->group->setApplication($this->application);
+        }
       }
     }
     return $this->group;

@@ -12,8 +12,10 @@
 namespace smalex86\webframework\core;
 
 use ArrayObject;
+use Exception;
 use Psr\Log\LoggerAwareInterface;
-use smalex86\webframework\core\{Controller, ControllerFinder, Database, Session};
+use smalex86\webframework\core\{Controller, Database, Session};
+use smalex86\webframework\core\exception\ControllerException;
 
 /**
  * Description of Server
@@ -24,6 +26,15 @@ class Server implements LoggerAwareInterface {
   
   use \Psr\Log\LoggerAwareTrait;
   
+  /** Список типов контроллеров */
+  const CONTROLLER_TYPES = ['page', 'menu', 'component'];
+  /** Название контроллера для статической страницы */
+  const CONTROLLER_STATIC_PAGE = 'staticPage';
+  /** Название контроллера для статического компонента */
+  const CONTROLLER_STATIC_COMPONENT = 'staticComponent';
+  /** Название контроллера для статического меню */
+  const CONTROLLER_STATIC_MENU = 'staticMenu';
+  
   /**
    * Настройки
    * @var ArrayObject
@@ -32,7 +43,7 @@ class Server implements LoggerAwareInterface {
   /**
    * Поле для хранения указателя на объект сессии
    * @var Session
-   */
+   */  
   protected $session = null;
   /**
    * поле для хранения указателя на объект для работы с базой данных
@@ -105,7 +116,7 @@ class Server implements LoggerAwareInterface {
    * Метод формирует алиас текущей страницы по значениям параметров GET
    * В базовом варианте обрабатывается два варианта:
    *  1. Возвращается $_GET['page'] если он существует
-   *  2. Возвращается 'main' если $_GET['page'] не существует
+   *  2. Возвращается 'pageStatic' если $_GET['page'] не существует
    * @return string
    */
   protected function getPageAlias() {
@@ -145,52 +156,13 @@ class Server implements LoggerAwareInterface {
   /**
    * Метод выполняет поиск контроллера от типа, алиаса и действия
    * @param string $type
-   * @param string $alias
+   * @param string $name
    * @param string $action
    * @return Controller возвращается объект контроллера
    */
-  protected function getController($type, $alias, $action = 'view') {
-    // сначала выполняем поиск контроллеров с динамическим содержимым
-    $controllerClassFinder = new ControllerFinder($this->getLogger(), $this->getDatabase());
-    if (!$controllerClassFinder) {
-      $this->logger->error('Ошибка при создании объекта ControllerFinder');
-      return null;
-    }
-    switch ($type) {
-      case 'page':
-        $className = $controllerClassFinder->getPageClass($alias, $action);
-        break;
-      case 'component':
-        $className = $controllerClassFinder->getComponentClass($alias, $action);
-        break;
-      case 'menu':
-        $className = $controllerClassFinder->getMenuClass($alias, $action); 
-        break;
-    }   
-    // если такой класс в таблице контроллеров не зарегистрирован, то обращаемся к контроллеру со 
-    // статическим содержимым
-    if (!$className) {
-      switch ($type) {
-        case 'page':
-          $className = 'smalex86\\webframework\\core\\controller\\page\\StaticController';
-          break;
-        case 'component':
-          $className = 'smalex86\\webframework\\core\\controller\\component\\StaticController';
-          break;
-        case 'menu':
-          $className = 'smalex86\\webframework\\core\\controller\\menu\\StaticController';
-          break;
-      }
-    }   
-    if (class_exists($className)) {
-      $controller = new $className($this, $alias);
-      $controller->setLogger($this->logger);
-      return $controller;
-    } else {
-      $this->logger->error('Файл с контроллером (type='.$type.
-              ', alias='.$alias.') класса ' .$className.' не найден');
-      return null;
-    }
+  protected function getController($type, $name, $action = 'view'): Controller
+  {
+    return $this->getControllerFromConfigList($type, $name, $action);
   }
   
   /**
@@ -225,12 +197,13 @@ class Server implements LoggerAwareInterface {
    * Универсальный метод для получения содержимого компонентов, меню и прочих объектов страницы
    * @param string $type тип компонента: component, menu
    * @param string $alias алиас требуемого компонента
-   * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
+   * @param string $action параметр для идентификации представления/действия компонента
+   * @param string[] $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
-   * @param int $position дополнительный параметр компонента
    * @return string
    */
-  protected function getAnyComponent($type, $alias, $pages = array(), $inverse = false, $position = 0) {
+  protected function getAnyComponent($type, $alias, $action = 'view', $pages = array(), 
+          $inverse = false) {
     //проверить введен ли массив страниц
     if ($pages) {
       // если введен, то проверить не входит ли текущая страница в этот массив + inverse
@@ -238,7 +211,7 @@ class Server implements LoggerAwareInterface {
         return '';
       }
     }
-    // если уже существует массив в контроллерами компонентов, выполнить поиск среди них
+    // если уже существует массив с контроллерами компонентов, выполнить поиск среди них
     $componentController = null;
     if (count($this->componentControllers)) {
       foreach ($this->componentControllers as $controller) {
@@ -251,7 +224,7 @@ class Server implements LoggerAwareInterface {
     } 
     // если контроллер в массиве не найден, то вызываем поиск контроллера
     if (!$componentController) {
-      $componentController = $this->getController($type, $alias);
+      $componentController = $this->getController($type, $alias, $action);
       // если контроллер найден и создан, то добавляем его в массив контроллеров компонентов
       if ($componentController) {
         $this->componentControllers[] = $componentController;
@@ -268,13 +241,13 @@ class Server implements LoggerAwareInterface {
   /**
    * Метод возвращает содержимое компонента
    * @param string $alias алиас требуемого компонента
-   * @param array of string $pages обозначает на страницах с какими алиасами выводить компонент
+   * @param string $action параметр для идентификации представления/действия компонента
+   * @param string[] $pages обозначает на страницах с какими алиасами выводить компонент
    * @param boolean $inverse если true, то будет выводить компонент на всех страницах кроме $pages
-   * @param int $position дополнительный параметр компонента
    * @return string
    */
-  public function getComponent($alias, $pages = array(), $inverse = false, $position = 0) {
-    return $this->getAnyComponent('component', $alias, $pages, $inverse, $position);
+  public function getComponent($alias, $action = 'view', $pages = array(), $inverse = false) {
+    return $this->getAnyComponent('component', $alias, $action, $pages, $inverse);
   }
   
   /**
@@ -285,7 +258,7 @@ class Server implements LoggerAwareInterface {
    * @return type
    */
   public function getMenu($alias, $pages = array(), $inverse = false) {
-    return $this->getAnyComponent('menu', $alias, $pages, $inverse);
+    return $this->getAnyComponent('menu', $alias, 'view', $pages, $inverse);
   }
   
   /**
@@ -303,27 +276,13 @@ class Server implements LoggerAwareInterface {
    */
   public function startActionManager() {
     if ($_POST) {
-      foreach ($_POST as $field => $value) {
-        $this->logger->debug('Данные = '.var_export($value, true));
-        if (is_array($value)) {
-          // подключение требуемой библиотеки
-          $className = $this->namespace . '\\' . $field;
-          $this->logger->debug('Класс = '.$className);
-          $this->logger->debug('class exists = '.class_exists($className)); 
-          if (class_exists($className)) {
-            $obj = new $className;
-            if ($obj && method_exists($obj, 'processAction')) {
-              $obj->processAction($value);
-            } else {
-              $this->logger->warning('Класс '.$className.
-                      ' не имеет метода processAction, данные ('.var_export($value, true).
-                      ') не будут обработаны');
-            }
-          } else {
-            $this->logger->warning('Класс '.$className.
-                    ' не найден, данные ('.var_export($value, true).
-                    ') не будут обработаны');
-          }
+      foreach ($_POST as $controllerName => $data) {
+        $this->logger->debug('ControllerName = '.$controllerName.', данные = '
+                .var_export($data, true));
+        if (is_array($data)) {
+          $data = $this->database->getSafetyStringList($data);
+          $controller = $this->getController('page', $controllerName, 'post');
+          $controller->processAction($data);
         }
       }
       // чтобы снова не вызывался обработчик массива пост, очищаем его
@@ -332,6 +291,130 @@ class Server implements LoggerAwareInterface {
     // проверка на наличие данных оставленных после неудачной пост обработки
     $this->getSession()->checkPostData(); 
     return FALSE;
+  }
+  
+  /**
+   * Получить настройки контроллеров по типу
+   * Если тип не указан вернуть все настройки контроллеров
+   * 
+   * @param string $type
+   * @return array
+   * @throws ControllerException
+   */
+  protected function getControllerConfigList(string $type = ''): array
+  {
+    if (!isset($this->config->controller) || empty($this->config->controller)) {
+      $msg = 'Empty controller list config';
+      $this->logger->error($msg);
+      throw new ControllerException($msg);
+    }
+    $result = [];
+    if ($type == '') {
+      $result = $this->config->controller;
+    } else if ($type && in_array($type, self::CONTROLLER_TYPES)) {
+      foreach ($this->config->controller as $controller) {
+        if ($controller['type'] == $type) {
+          $result[] = $controller;
+        }
+      }
+    }
+    return $result;
+  }
+  
+  /**
+   * Получить объект контроллера
+   * 
+   * @param string $type
+   * @param string $name Атрибут 'page' из uri
+   * @param string $action Атрибут 'action' из uri
+   * @return Controller
+   * @throws ControllerException
+   */
+  protected function getControllerFromConfigList(string $type, string $name, 
+          string $action): Controller
+  {
+    $this->logger->debug('Входные данные: type = '.$type.', name = '.$name.', action = '.$action);
+    $controllerConfigList = $this->getControllerConfigList($type);
+    if (!$controllerConfigList || empty($controllerConfigList)) {
+      $msg = 'Not found controller configs by type "' . $type . '"';
+      $this->logger->error($msg);
+      throw new ControllerException($msg);
+    }
+    $controllerConfig = $this->findControllerConfigIn($controllerConfigList, $name, $action);
+    $alias = '';
+    // если для заданного имени не найден контроллер, то получить контроллер для вывода
+    // статического содержимого
+    if (!$controllerConfig) {
+      $alias = $name;
+      $name = $this->getControllerStaticName($type);
+      $controllerConfig = $this->findControllerConfigIn($controllerConfigList, $name, $action);
+    }
+    try {
+      if ($action == '') {
+        $action = 'view';
+      }
+      $this->logger->debug('Создание объекта контроллера, данные: ' 
+              . var_export($controllerConfig, true) . ', alias = ' . $alias . ', action = ' 
+              . $action);
+      $controller = new $controllerConfig['class']($this, $alias, $action);
+      $controller->setLogger($this->logger);
+      $controller->mergeViewList($controllerConfig['action']);
+      return $controller;
+    } catch (Exception $e) {
+      $msg = 'Error initialization controller with class = ' . $controllerConfig['class']
+              . ', error: ' . $e->getMessage();
+      $this->logger->error($msg);
+      throw new ControllerException($msg);
+    }
+  }
+  
+  /**
+   * Поиск в массиве настроек контроллеров нужного контроллера
+   * 
+   * @param array $configItems Массив настроек контроллеров
+   * @param string $name Название контроллера
+   * @param string $action Атрибут действия
+   * @return array
+   */
+  private function findControllerConfigIn(array $configItems, string $name, string $action)
+  {
+    $result = [];
+    foreach ($configItems as $item) {
+      if ($item['name'] == $name) {
+        foreach ($item['action'] as $itemAction=>$view) {
+          if ($itemAction == $action) {
+            $result = $item;
+            break;
+          }
+        }
+      }
+      if ($result) {
+        break;
+      }
+    }
+    return $result;
+  }
+  
+  /**
+   * Возвращает имя контроллера для вывода статического содержимого
+   * 
+   * @param string $type Тип контроллера
+   * @return string
+   */
+  private function getControllerStaticName(string $type): string
+  {
+    switch ($type) {
+      case 'page':
+        $name = self::CONTROLLER_STATIC_PAGE;
+        break;
+      case 'component':
+        $name = self::CONTROLLER_STATIC_COMPONENT;
+        break;
+      case 'menu':
+        $name = self::CONTROLLER_STATIC_MENU;
+        break;
+    }
+    return $name;
   }
   
 }
