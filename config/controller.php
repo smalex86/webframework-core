@@ -59,7 +59,16 @@ $config['controller'] = [
         'type' => 'component',
         'class' => 'smalex86\\webframework\\core\\user\\controller\\User',
         'action' => [
-            'login' => 'smalex86\\webframework\\core\\user\\view\\Login'
+            'login' => 'smalex86\\webframework\\core\\user\\view\\Login',
+            'info' => 'smalex86\\webframework\\core\\user\\view\\Info'
+        ]
+    ],
+    [
+        'name' => 'user',
+        'type' => 'page',
+        'class' => 'smalex86\\webframework\\core\\user\\controller\\User',
+        'action' => [
+            'post' => ''
         ]
     ],
 ];
