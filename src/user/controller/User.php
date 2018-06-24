@@ -31,6 +31,7 @@ class User extends Controller {
     if (!$this->mapper) {
       $this->mapper = new UserMapper($this->application->getDatabase(),
               $this->application->getSession());
+      $this->mapper->setLogger($this->logger);
     }
     return $this->mapper;
   }
@@ -47,13 +48,19 @@ class User extends Controller {
       switch ($this->action) {
         case 'login':
           if (!$this->getRecord()) {
-            $data = $this->getView($this->action)->getView([]);
+            $data = $this->getView()->getView([]);
           } else {
             $data = '';
           }
           break;
         case 'info':
-          
+          $inputData = [];
+          if ($this->getRecord()) {
+            $inputData = [
+                'name' => $this->getRecord()->fname . ' ' . $this->getRecord()->lname
+            ];
+          }
+          $data = $this->getView()->getView($inputData);
           break;
         case 'view':
           
@@ -78,4 +85,70 @@ class User extends Controller {
     return $title;
   }
 
+  
+  public function processAction(array $data) {
+    if (is_array($data)) {
+      $this->logger->debug('data = ' . var_export($data, true));
+      foreach ($data as $field=>$value) {
+        switch ($field) {
+          case 'submitLogin': 
+            if (isset($data['ulogin'], $data['upassword'])) {
+              $user = $this->getMapper()->getByLoginAndPassword($data['ulogin'], 
+                      $data['upassword']);
+              $this->getMapper()->saveToSession($user);
+              if ($user) {
+                $this->session->setPostMessageToSession('Вы выполнили авторизацию под учетной '
+                        . 'записью с логином ' . $user->login, $this->session::ALERT_SUCCESS);
+              } else {
+                $this->session->setPostMessageToSession('Некорректные данные для авторизации', 
+                        $this->session::ALERT_DANGER);
+              }
+            } else {
+              $this->session->setPostMessageToSession('Не введен логин или пароль', 
+                      $this->session::ALERT_DANGER);
+            }
+            break;
+//          case 'submitRegistration':
+//            $this->application->setPostMessageInSession('', $this->userRegistration($data), $this->application->getSmartPost()); 
+//            break;
+          case 'submitExit':
+            $user = $this->getMapper()->getActiveUser();
+            if ($user) {
+              $this->getMapper()->clearSession();
+              $this->session->setPostMessageToSession('Выполнен выход для учетной записи '
+                        . 'с логином ' . $user->login, $this->session::ALERT_SUCCESS);
+            } else {
+              $this->session->setPostMessageToSession('Не найдена активная учетная запись',
+                        $this->session::ALERT_INFO);
+            }
+            break;
+//          case 'changeName':
+//            $this->application->setPostMessageInSession('', $this->userChangeName($data['changeName']), $this->application->getSmartPost()); 
+//            break;
+//          case 'changeCity':
+//            $this->application->setPostMessageInSession('', $this->userChangeCity($data['changeCity']), $this->application->getSmartPost());
+//            break;
+//          case 'changeEmail':
+//            $this->application->setPostMessageInSession('', $this->userChangeEmail($data['changeEmail']), $this->application->getSmartPost());
+//            break;
+//          case 'changePhone':
+//            $this->application->setPostMessageInSession('', $this->userChangePhone($data['changePhone']), $this->application->getSmartPost());
+//            break;
+//          case 'changePassword':
+//            $this->application->setPostMessageInSession('', $this->userChangePassword($data['changePassword']), $this->application->getSmartPost()); 
+//            break;
+//          case 'changeAvatar':
+//            $this->application->setPostMessageInSession('', $this->userChangeAvatar($data['changeAvatar']), $this->application->getSmartPost()); 
+//            break;
+//          case 'changeEmailStatus':
+//            $this->application->setPostMessageInSession('', $this->userChangeEmailStatus($data['changeEmailStatus']), $this->application->getSmartPost());
+//            break;
+//          case 'changePhoneStatus':
+//            $this->application->setPostMessageInSession('', $this->userChangePhoneStatus($data['changePhoneStatus']), $this->application->getSmartPost());
+//            break;
+        }
+      }			
+    }
+  }
+  
 }

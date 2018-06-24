@@ -50,7 +50,7 @@ class Login extends View {
         <div class="panel-footer text-right">
           <input type="hidden" name="area" value="component">
           <a href="index.php?page=user&action=registration" class="btn btn-link">Регистрация</a>
-          <input type="submit" type="button" class="btn btn-primary" name="user[submit_login]" class="btn btn-success" value="Вход">
+          <input type="submit" type="button" class="btn btn-primary" name="user[submitLogin]" class="btn btn-success" value="Вход">
         </div>
       </div>
     </form>

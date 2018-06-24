@@ -13,6 +13,9 @@ namespace smalex86\webframework\core\user\dataMapper;
 
 use smalex86\webframework\core\{ActiveRecord, Database, DataMapper, Session};
 use smalex86\webframework\core\user\activeRecord\User as UserRecord;
+use Exception;
+use smalex86\webframework\core\exception\DataMapperException;
+
 
 /**
  * User DataMapper
@@ -43,10 +46,59 @@ class User extends DataMapper {
     $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
     $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
     if ($row && is_array($row)) {
-      return new UserRecord($row['id'], $row['u_login'], $row['u_password'], $row['user_group_id'], 
-              $row['name_f'], $row['name_m'], $row['name_l'], $row['email'], 
-              $row['email_verification_code'], $row['email_verified'], $row['registration_date'], 
-              $row['avatar'], $row['phone']);
+      return new UserRecord(
+              $row['id'], 
+              $row['u_login'], 
+              $row['u_password'], 
+              $row['user_group_id'], 
+              $row['name_f'], 
+              $row['name_m'], 
+              $row['name_l'], 
+              $row['email'], 
+              $row['email_verification_code'], 
+              $row['email_verified'], 
+              $row['registration_date'], 
+              $row['avatar'], 
+              $row['phone']
+            );
+    }
+    return null;
+  }
+  
+  /**
+   * Получить объект пользователя по логину и паролю
+   * @param string $login
+   * @param string $password
+   * @return UserRecord
+   * @throws DataMapperException
+   */
+  public function getByLoginAndPassword(string $login, string $password)
+  {
+    $query = sprintf('select * from %s where u_login = "%s" and u_password = md5("%s") limit 1',
+            $this->tableName, $login, $password);
+    try {
+      $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
+      if ($row && is_array($row)) {
+        return new UserRecord(
+              $row['id'], 
+              $row['u_login'], 
+              $row['u_password'], 
+              $row['user_group_id'], 
+              $row['name_f'], 
+              $row['name_m'], 
+              $row['name_l'], 
+              $row['email'], 
+              $row['email_verification_code'], 
+              $row['email_verified'], 
+              $row['registration_date'], 
+              $row['avatar'], 
+              $row['phone']
+            );
+      }
+    } catch (Exception $ex) {
+      $msg = 'Ошибка при выполнении запроса к базе данных: ' . $ex->getMessage();
+      $this->logger->error($msg);
+      throw new DataMapperException($msg);
     }
     return null;
   }
@@ -55,10 +107,21 @@ class User extends DataMapper {
    * Получает данные о пользователе сохраненном в сессии
    * @return \smalex86\webframework\core\user\activeRecord\User
    */
-  public function getActiveUser() {
-    $userSessionData = $this->session->getData('user');
-    if (isset($userSessionData['id'])) {
-      return $this->getById($userSessionData['id']);
+  public function getActiveUser()
+  {
+    $userData = $this->session->getData('user');
+    $this->logger->debug('userData from session = ' . var_export($userData, true));
+    try {
+      $user = unserialize($userData['serial']);
+      $this->logger->debug('unserialized user = ' . var_export($user, true));
+      if ($user === false || get_class($user) != UserRecord::class) {
+        return null;
+      }
+      return $user;
+    } catch (Exception $ex) {
+      $msg = 'Ошибка при десериализации объекта user из данных сессии: ' . $ex->getMessage();
+      $this->logger->error($msg);
+      throw new DataMapperException($msg);
     }
     return null;
   }
@@ -117,6 +180,25 @@ class User extends DataMapper {
       $record->id = $this->database->insertSingle($query, __FILE__.':'.__LINE__);
     }
     return null;
+  }
+  
+  /**
+   * Сохраняет данные объекта user в сессию
+   * @param UserRecord $user
+   */
+  public function saveToSession(UserRecord $user) 
+  {
+    $data['serial'] = serialize($user);
+    $this->session->setData('user', $data);
+  }
+  
+  /**
+   * Очищает данные объекта user в сессии
+   */
+  public function clearSession()
+  {
+    $data['serial'] = '';
+    $this->session->setData('user', $data);
   }
 
 }
