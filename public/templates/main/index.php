@@ -61,7 +61,7 @@
               <div class='navbar-collapse collapse'>
                 <?php 
                   echo $application->getMenu('main');
-                  echo $application->getComponent('user');
+                  echo $application->getComponent('user', 'info');
                 ?>
               </div><!--/.navbar-collapse -->
     </div>

@@ -42,7 +42,7 @@
       </div>
       <div class="collapse navbar-collapse">
         <?php echo $application->getMenu('main'); ?>
-        <?php //echo $application->getComponent('usermenu'); ?>
+        <?php echo $application->getComponent('user', 'info'); ?>
       </div>
     </div>
   </div> <!-- Nav -->    
