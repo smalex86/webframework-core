@@ -18,6 +18,8 @@ namespace smalex86\webframework\core;
  */
 class FunctionList {
 
+  static public $varArray = [];
+  
   /**
    * вычисление протокола сервера
    * 
@@ -52,6 +54,72 @@ class FunctionList {
   
   static public function getScriptName() {
     return $_SERVER['SCRIPT_NAME'];
+  }
+  
+  /**
+   * Инициализация списка переменных для подстановок
+   * @param array $config массив данных из конфигурационного файла linkVariable.php
+   * @param \Psr\Log\LoggerInterface $logger
+   */
+  static public function variableArrayInit(array $config, \Psr\Log\LoggerInterface $logger) {
+    if (empty($config)) {
+      return ;
+    }
+    self::$varArray = [];
+    foreach ($config as $varInitItem) {
+      try {
+        if ($varInitItem['value']) {
+          self::$varArray[$varInitItem['name']] = $varInitItem['value'];
+        } else {
+          if ($varInitItem['init']['static']) {
+            $method = $varInitItem['init']['method'];
+            self::$varArray[$varInitItem['name']] = 
+                    $varInitItem['init']['class']::$method();
+          } else {
+            self::$varArray[$varInitItem['name']] = 
+                    $varInitItem['init']['class']->$varInitItem['init']['method']();
+          }
+        }
+      } catch (\Exception $e) {
+        $msg = $e->getMessage() . ', file = ' . $e->getFile() . ', line = ' . $e->getLine();
+        $logger->warning($msg);
+      }
+    }
+  }
+  
+  /**
+   * Возвращает значение переменной, если таковая существует, либо null
+   * @param string $varName
+   * @return string|null
+   */
+  static public function getVariable(string $varName) {
+    if (!isset(self::$varArray) || empty(self::$varArray)) {
+      return null;
+    }
+    $result = null;
+    foreach (self::$varArray as $var) {
+      if ($var['name'] == $varName) {
+        $result = $var['value'];
+        break;
+      }
+    }
+    return $result;
+  }
+  
+  /**
+   * Выполнить замену переменных в строке
+   * @param string $input входная строка
+   * @return string строка на выходе
+   */
+  static public function replaceVariables(string $input) {
+    if (!isset(self::$varArray) || empty(self::$varArray) || !$input) {
+      return $input;
+    }
+    $output = $input;
+    foreach (self::$varArray as $key=>$value) {
+      $output = preg_replace(sprintf('/<<%s>>/', $key), $value, $output);
+    }
+    return $output;
   }
    
 }

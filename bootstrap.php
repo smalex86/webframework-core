@@ -32,6 +32,8 @@ $logger->routeList->attach(new smalex86\logger\route\FileRoute([
     'logFile' => $configObj->logger['logfile'],
     'folder' => $configObj->logger['logFolder']
 ]));
+// инициализация переменных для замены в строках (ссылках)
+\smalex86\webframework\core\FunctionList::variableArrayInit($config['linkVariable'], $logger);
 // база данных
 $database = new smalex86\webframework\core\Database(
         $logger, 
