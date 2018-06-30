@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core\packageStatic\activeRecord;
 
-use smalex86\webframework\core\ActiveRecord;
+use smalex86\webframework\core\{ActiveRecord, FunctionList};
 
 /**
  * Menu Active Record
@@ -20,14 +20,20 @@ use smalex86\webframework\core\ActiveRecord;
  */
 class Menu extends ActiveRecord {
   
+  /** Идентификатор меню */
   public $mid;
+  /** Название меню */
   public $name;
+  /** Алиас меню */
   public $alias;
+  /** Шаблон меню - не реализовано */
   public $template;
+  /** Тип меню */
   public $type;
-  
+  /** массив со списком записей пунктов меню из базы данных */
   protected $items = array();
-
+  /** массив дерева элементов меню */
+  private $itemsTree = array();
 
   /**
    * Данный статический метод создает экземпляр данного класса с указанными параметрами
@@ -45,11 +51,34 @@ class Menu extends ActiveRecord {
     $record->template = $template;
     $record->type = $type;
     $record->items = $items;
+    $record->replaceVarsFromLinks($record->items);
     return $record;
   }
   
-  private $itemsTree = array(); // массив дерева элементов меню
-        
+  
+  // функция формирования меню
+  public function getMenu() {
+    $data = null;
+    if (is_array($this->items)) {
+      $this->getTreeItemsMenu($this->items); // сортировка списка ссылок и назначение атрибута childs
+      $miidActive = $this->getActiveItem($this->itemsTree); // поиск активной ссылки
+      $data = $this->getTreeItemsMenuHTML($this->itemsTree, $miidActive); // построение списка меню
+    }
+    return $data;
+  }
+  
+  /**
+   * Заменяет переменные значениями в ссылках пунктов меню.
+   * Данные возвращаются назад в массив $items
+   * @param array $items
+   */
+  protected function replaceVarsFromLinks(array &$items) {
+    foreach ($items as $key=>$item) {
+      $link = \smalex86\webframework\core\FunctionList::replaceVariables($item['link']);
+      $items[$key]['link'] = $link;
+    }
+  }
+  
   /**
    * Метод производит сортировку массива в виде дерева + добавляет атрибут childs
    * Сохраняет данные рекурсивным проходом в $itemsTree
@@ -155,17 +184,6 @@ class Menu extends ActiveRecord {
       }
     }
     $data .= '</ul>';
-    return $data;
-  }
-
-  // функция формирования меню
-  public function getMenu() {
-    $data = null;
-    if (is_array($this->items)) {
-      $this->getTreeItemsMenu($this->items); // сортировка списка ссылок и назначение атрибута childs
-      $miidActive = $this->getActiveItem($this->itemsTree); // поиск активной ссылки
-      $data = $this->getTreeItemsMenuHTML($this->itemsTree, $miidActive); // построение списка меню
-    }
     return $data;
   }
   
