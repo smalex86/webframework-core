@@ -129,6 +129,37 @@ class User extends DataMapper {
   public function getList() {
     return;
   }
+  
+  public function getListByIdList(array $idList) {
+    $ids = implode(',', $idList);
+    $query = sprintf('select * from %s where id in (%s)', $this->tableName, $ids);
+    $result = null;
+    try {
+      $rows = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
+      foreach ($rows as $row) {
+        $result[] = new UserRecord(
+              $row['id'], 
+              $row['u_login'], 
+              $row['u_password'], 
+              $row['user_group_id'], 
+              $row['name_f'], 
+              $row['name_m'], 
+              $row['name_l'], 
+              $row['email'], 
+              $row['email_verification_code'], 
+              $row['email_verified'], 
+              $row['registration_date'], 
+              $row['avatar'], 
+              $row['phone']
+            );
+      }
+    } catch (Exception $ex) {
+      $msg = 'Ошибка при выполнении запроса к базе данных: ' . $ex->getMessage();
+      $this->logger->error($msg);
+      throw new DataMapperException($msg);
+    }
+    return $result;
+  }
 
   public function processAction($postData = array()) {
     return;
