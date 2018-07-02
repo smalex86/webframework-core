@@ -347,7 +347,7 @@ class Server implements LoggerAwareInterface {
     if (!$controllerConfig) {
       $alias = $name;
       $name = $this->getControllerStaticName($type);
-      $controllerConfig = $this->findControllerConfigIn($controllerConfigList, $name, $action);
+      $controllerConfig = $this->findControllerConfigIn($controllerConfigList, $name, 'view');
     }
     try {
       if ($action == '') {
