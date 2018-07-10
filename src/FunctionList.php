@@ -97,11 +97,8 @@ class FunctionList {
       return null;
     }
     $result = null;
-    foreach (self::$varArray as $var) {
-      if ($var['name'] == $varName) {
-        $result = $var['value'];
-        break;
-      }
+    if (array_key_exists($varName, self::$varArray)) {
+      $result = self::$varArray[$varName];
     }
     return $result;
   }
