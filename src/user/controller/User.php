@@ -150,5 +150,9 @@ class User extends Controller {
       }			
     }
   }
-  
+
+  public function processAjax(array $getData, array $postData) {
+    return ;
+  }
+
 }

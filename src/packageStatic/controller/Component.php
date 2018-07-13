@@ -56,4 +56,8 @@ class Component extends Controller {
     return ;
   }
 
+  public function processAjax(array $getData, array $postData) {
+    return ;
+  }
+
 }

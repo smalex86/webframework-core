@@ -41,7 +41,10 @@ abstract class Controller implements LoggerAwareInterface {
   
   protected $mapper = null;
   protected $record = null;
-  
+  /**
+   * Класс DataMapper контроллера
+   * @var string
+   */
   protected $mapperClass = '';
   /**
    * Атрибут 'page' из uri
@@ -68,6 +71,16 @@ abstract class Controller implements LoggerAwareInterface {
    * @var Database
    */
   protected $database;
+  /**
+   * Данные массива $_GET
+   * @var array
+   */
+  protected $getData = [];
+  /**
+   * Данные массива $_POST
+   * @var array
+   */
+  protected $postData = [];
 
   public function __construct(Server $application, $alias = '', $action = 'view') {
     $this->application = $application;
@@ -87,6 +100,25 @@ abstract class Controller implements LoggerAwareInterface {
   public function mergeViewList(array $viewList) {
     $this->configViewList = array_merge($this->configViewList, $viewList);
   }
+  
+  /**
+   * Передать в контроллер данные массива $_GET
+   * @param array $getData
+   */
+  public function setGetData(array $getData) 
+  {
+    $this->getData = $getData;
+  }
+  
+  /**
+   * Передать в контроллер данные массива $_POST
+   * @param array $postData
+   */
+  public function setPostData(array $postData)
+  {
+    $this->postData = $postData;
+  }
+  
   /**
    * Метод возвращает алиас контроллера
    */
@@ -133,6 +165,11 @@ abstract class Controller implements LoggerAwareInterface {
       }
     }
   }
+  
+  /**
+   * Выполнить обработку запроса ajax
+   */
+  abstract public function processAjax(array $getData, array $postData);
   
   /**
    * Выполнить обработку пост-данных
