@@ -262,32 +262,12 @@ class Session implements LoggerAwareInterface {
     $data = "<script type='text/javascript'>$(function () {";
       /* найти все элементы для отправки данных на сервер */
       $data .= "$('button[msgId]').click( function() {"
-                  . "var posting = $.post('ajax.php?object=smalex86\webframework\core\session&action=delPostMsgById&msgId='"
+                  . "var posting = $.post('ajax.php?unit=session&action=delPostMsg&id='"
                   . "+ $(this).attr('msgId'));"
                 . "});";
     // закрывающий хвост 				
     $data .= "});</script>";
     return $data;
-  }
-  
-  /**
-   * обработчик действий ajax
-   * @param array $ajaxData
-   * @return boolean
-   */
-  public function processAjaxAction($ajaxData = array()) {
-    $this->logger->debug('ajax begin');
-    // анализ массива _GET		
-    if ($ajaxData) {
-      switch ($ajaxData['action']) {
-        case 'delPostMsgById':
-          if (isset($ajaxData['msgId'])) {
-            $this->delPostMessageFromSession($ajaxData['msgId']);
-          }
-        break;	
-      }
-    }
-    return false;
   }
   
 }
