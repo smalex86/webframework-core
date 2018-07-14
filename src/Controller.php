@@ -133,6 +133,17 @@ abstract class Controller implements LoggerAwareInterface {
     return $this->action;
   }
   /**
+   * Получить значение параметра из массива _GET
+   * @param string $name
+   * @return string|null
+   */
+  public function getParamFromGetData(string $name) {
+    if (!empty($this->getData) && isset($this->getData[$name])) {
+      return $this->getData[$name];
+    }
+    return null;
+  }
+  /**
    * Метод возвращает объект представления по его имени
    * 
    * @param string $name
