@@ -20,6 +20,19 @@ use Psr\Log\LoggerAwareInterface;
  */
 abstract class ActiveRecord implements LoggerAwareInterface {
   
+  /**
+   * Константа статуса активной записи
+   */
+  const STATUS_ACTIVE = 1;
+  /**
+   * Константа статуса не активной записи
+   */
+  const STATUS_NOT_ACTIVE = 2;
+  /**
+   * Константа статуса удаленной записи
+   */
+  const STATUS_DELETE = 3;
+  
   use \Psr\Log\LoggerAwareTrait;
 
   public function __construct() {
