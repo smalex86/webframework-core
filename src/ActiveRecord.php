@@ -39,6 +39,20 @@ abstract class ActiveRecord implements LoggerAwareInterface {
     
   }
   
+  /**
+   * Печать объекта
+   * @return string
+   */
+  public function __toString() 
+  {
+     $keyValue = [];
+     foreach ($this as $key=>$value) {
+         $keyValue[] = $key . '=' . var_export($value, true);
+     }
+     return sprintf('Object of %s(%s)', 
+             get_class($this), implode(';', $keyValue));
+  }
+  
   //abstract static public function newRecord();
   
 }
