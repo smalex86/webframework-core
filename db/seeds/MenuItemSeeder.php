@@ -28,7 +28,7 @@ class MenuItemSeeder extends AbstractSeed
           'parent_id' => 0,
           'menu_id' => 1,
           'name' => 'Новости',
-          'link' => 'index.php?page=blog&section=news',
+          'link' => '<<script>>?page=blog&section=news',
           'weight' => 100,
           'enabled' => 1
         ],
@@ -36,7 +36,7 @@ class MenuItemSeeder extends AbstractSeed
           'parent_id' => 0,
           'menu_id' => 2,
           'name' => 'Личный кабинет',
-          'link' => 'index.php?page=user&section=info',
+          'link' => '<<script>>?page=user&section=info',
           'weight' => 100,
           'enabled' => 1
         ],
@@ -44,7 +44,7 @@ class MenuItemSeeder extends AbstractSeed
           'parent_id' => 0,
           'menu_id' => 3,
           'name' => 'Пользователи',
-          'link' => 'index.php?page=usermanager',
+          'link' => '<<script>>?page=usermanager',
           'weight' => 100,
           'enabled' => 1
         ],  
@@ -52,15 +52,15 @@ class MenuItemSeeder extends AbstractSeed
           'parent_id' => 0,
           'menu_id' => 3,
           'name' => 'Материалы',
-          'link' => 'index.php?page=pagemanager',
+          'link' => '<<script>>?page=pagemanager',
           'weight' => 100,
           'enabled' => 1
         ],
         [
           'parent_id' => 0,
           'menu_id' => 3,
-          'name' => 'Материалы',
-          'link' => 'index.php?page=menumanager',
+          'name' => 'Меню',
+          'link' => '<<script>>?page=menumanager',
           'weight' => 100,
           'enabled' => 1
         ],
@@ -68,7 +68,7 @@ class MenuItemSeeder extends AbstractSeed
           'parent_id' => 0,
           'menu_id' => 3,
           'name' => 'Файлы',
-          'link' => 'index.php?page=filemanager',
+          'link' => '<<script>>?page=filemanager',
           'weight' => 100,
           'enabled' => 1
         ]
