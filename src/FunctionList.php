@@ -18,7 +18,21 @@ namespace smalex86\webframework\core;
  */
 class FunctionList {
 
+  /**
+   * Массив переменных
+   * @var array
+   */
   static public $varArray = [];
+  /**
+   * Название активного шаблона
+   * @var string
+   */
+  static protected $activeTemplate = 'main';
+  /**
+   * Url папки assets
+   * @var string
+   */
+  static protected $assetsUrl = '';
   
   /**
    * Вычисление протокола сервера
@@ -78,6 +92,45 @@ class FunctionList {
    */
   static public function getScriptName() {
     return $_SERVER['SCRIPT_NAME'];
+  }
+  
+  /**
+   * Указать активный шаблон
+   * @param string $activeTemplate
+   */
+  static public function setActiveTemplate(string $activeTemplate) {
+    self::$activeTemplate = $activeTemplate;
+  }
+  /**
+   * Получить название активного шаблона
+   * @return string
+   */
+  static public function getActiveTemplate(): string {
+    return self::$activeTemplate;
+  }
+  /**
+   * Получить uri пути к папке assets
+   * @return string
+   */
+  static public function getAssetsPath() {
+    if (!self::$assetsUrl) {
+      self::$assetsUrl = 'assets/' . self::$activeTemplate . '/';
+    }
+    return self::$assetsUrl;
+  }
+  /**
+   * Получить uri пути к папке assets js
+   * @return string
+   */
+  static public function getAssetsJsPath() {
+    return self::getAssetsPath() . 'js/';
+  }
+  /**
+   * Получить uri пути к папке assets css
+   * @return string
+   */
+  static public function getAssetsCssPath() {
+    return self::getAssetsPath() . 'css/';
   }
   
   /**
