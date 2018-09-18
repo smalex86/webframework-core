@@ -95,8 +95,8 @@ class User extends Controller {
             if (isset($data['ulogin'], $data['upassword'])) {
               $user = $this->getMapper()->getByLoginAndPassword($data['ulogin'], 
                       $data['upassword']);
-              $this->getMapper()->saveToSession($user);
               if ($user) {
+                $this->getMapper()->saveToSession($user);
                 $this->session->setPostMessageToSession('Вы выполнили авторизацию под учетной '
                         . 'записью с логином ' . $user->login, $this->session::ALERT_SUCCESS);
               } else {
