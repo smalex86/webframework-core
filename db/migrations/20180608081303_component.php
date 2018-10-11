@@ -33,7 +33,7 @@ class Component extends AbstractMigration
        */
       $tableUser = $this->table('core_component', ['comment' => 'Компоненты']);
       $tableUser->addColumn('name', 'string', ['null' => false, 'comment' => 'Название латиница'])
-              ->addColumn('text', 'text', ['null' => true, 'comment' => 'HTML Текст компонента'])
+              ->addColumn('text', 'string', ['null' => true, 'comment' => 'HTML Текст компонента'])
               ->addColumn('filename', 'string', ['null' => true, 
                   'comment' => 'Имя файла с текстом компонента'])
               ->create();
