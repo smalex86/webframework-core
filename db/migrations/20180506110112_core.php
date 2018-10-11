@@ -2,7 +2,6 @@
 
 
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class Core extends AbstractMigration
 {
@@ -146,7 +145,7 @@ class Core extends AbstractMigration
               ->addColumn('name', 'string', ['null' => false, 'comment' => 'Текст пункта меню'])
               ->addColumn('link', 'string', ['null' => false, 'comment' => 'Ссылка пункта меню'])
               ->addColumn('weight', 'integer', ['null' => false, 'default' => 100, 
-                  'limit' => MysqlAdapter::INT_TINY, 
+                  'limit' => 255, 
                   'comment' => 'Вес пункта меню, чем меньше, тем выше в списке'])
               ->addColumn('enabled', 'boolean', ['null' => false, 'default' => 0,
                   'comment' => 'Определяет включен пункт меню или нет'])
@@ -167,7 +166,7 @@ class Core extends AbstractMigration
       $table = $this->table('core_controller_type', ['comment' => 'Типы контроллеров']);
       $table->addColumn('name', 'string', ['comment' => 'Название типа'])
               ->addColumn('description', 'text', ['null' => true, 
-                  'limit' => MysqlAdapter::TEXT_TINY, 'comment' => 'Примечание'])
+                  'limit' => 255, 'comment' => 'Примечание'])
               ->create();
     }
 }
