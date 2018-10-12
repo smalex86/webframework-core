@@ -14,9 +14,11 @@ namespace smalex86\webframework\core;
 use Psr\Log\LoggerInterface;
 
 /**
- * Description of Database
+ * Database
  *
  * @author Alexandr Smirnov
+ * 
+ * @deprecated since 2018.10.12
  */
 class Database {
   
