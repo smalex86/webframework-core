@@ -43,6 +43,10 @@ abstract class ActiveRecord implements LoggerAwareInterface {
    */
   protected $dataMapper = null;
   
+  public function __construct() {
+    ;
+  }
+  
   /**
    * Печать объекта
    * @return string
