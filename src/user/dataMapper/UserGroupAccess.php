@@ -32,11 +32,14 @@ class UserGroupAccess extends DataMapper {
   }
 
   public function getById(int $id) {
-    $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
+    $query = sprintf('select * from %s where id = :id limit 1', 
+            $this->getTableName());
+    $params = ['id' => $id];
+    $row = $this->database->selectSingleRow($query, $params);
     if ($row && is_array($row)) {
-      return new UserGroupAccessRecord($row['id'], $row['user_group_id'], $row['object_name'], 
-              $row['object_id'], $row['a_admin'], $row['a_read'], $row['a_write']);
+      return new UserGroupAccessRecord($row['id'], $row['user_group_id'], 
+              $row['object_name'], $row['object_id'], $row['a_admin'], 
+              $row['a_read'], $row['a_write']);
     }
     return null;
   }
@@ -48,18 +51,19 @@ class UserGroupAccess extends DataMapper {
    */
   public function getListForGroupIdChain(array $groupIdChain) 
   {
-    $query = sprintf('SELECT * FROM `%s` WHERE user_group_id in (%s)', 
-            $this->getTableName(), implode(',', $groupIdChain));
-    $rows = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
+    $query = sprintf('SELECT * FROM `%s` WHERE user_group_id in (:ids)', 
+            $this->getTableName());
+    $params = ['ids' => implode(',', $groupIdChain)];
+    $rows = $this->database->selectMultipleRows($query, $params);
     $groupAccessList = [];
     if (is_array($rows)) {
       $rules = $this->fillAccessRulesForGroup($rows, $groupIdChain);
       if (is_array($rules)) {
         foreach ($rules as $objectName=>$objectList) {
           foreach ($objectList as $objectId=>$object) {
-            $groupAccessList[] = new UserGroupAccessRecord($object['id'], $object['user_group_id'], 
-                    $objectName, $objectId, $object['a_admin'], $object['a_read'], 
-                    $object['a_write']);
+            $groupAccessList[] = new UserGroupAccessRecord($object['id'], 
+                    $object['user_group_id'], $objectName, $objectId, 
+                    $object['a_admin'], $object['a_read'], $object['a_write']);
           }
         }
       }

@@ -180,7 +180,7 @@ class DatabasePDO {
      * @throws DatabaseException
      */
     public function selectMutlipleRows(string $query, array $params) {
-      return $this->getExecutedStmt($query, $params)->fetchAll(\PDO::FETCH_LAZY);
+      return $this->getExecutedStmt($query, $params)->fetchAll();
     }
     
     /**

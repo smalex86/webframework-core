@@ -35,9 +35,11 @@ $logger->routeList->attach(new smalex86\logger\route\FileRoute([
 // инициализация переменных для замены в строках (ссылках)
 \smalex86\webframework\core\FunctionList::variableArrayInit($config['linkVariable'], $logger);
 // база данных
-$database = new smalex86\webframework\core\Database(
+$database = new smalex86\webframework\core\DatabasePDO(
         $logger, 
-        $configObj->db['host'], 
+        $configObj->db['type'],
+        $configObj->db['host'],
+        $configObj->db['port'],
         $configObj->db['username'], 
         $configObj->db['password'], 
         $configObj->db['name']);
