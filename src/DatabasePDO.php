@@ -169,7 +169,7 @@ class DatabasePDO {
      * @throws DatabaseException
      */
     public function selectSingleRow(string $query, array $params) {
-      return $this->getExecutedStmt($query, $params)->fetch(\PDO::FETCH_LAZY);
+      return $this->getExecutedStmt($query, $params)->fetch(\PDO::FETCH_ASSOC);
     }
     
     /**
