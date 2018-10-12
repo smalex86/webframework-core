@@ -84,14 +84,15 @@ class User extends DataMapper {
   {
     $query = sprintf('select * from %s where u_login = :login and '
             . 'u_password = :password limit 1', $this->tableName);
-    $params = ['login' => $login, 'password' => $password];
+    $params = ['login' => $login, 'password' => md5($password)];
     try {
       $row = $this->database->selectSingleRow($query, $params);
       if ($row && is_array($row)) {
+        $this->logger->debug('user ok');
         return new UserRecord(
               $row['id'], 
               $row['u_login'], 
-              md5($row['u_password']), 
+              $row['u_password'], 
               $row['user_group_id'], 
               $row['name_f'], 
               $row['name_m'], 
