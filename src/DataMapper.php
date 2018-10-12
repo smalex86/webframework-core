@@ -13,7 +13,7 @@ namespace smalex86\webframework\core;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use smalex86\webframework\core\Database;
+use smalex86\webframework\core\DatabasePDO;
 use smalex86\webframework\core\Session;
 use smalex86\webframework\core\ActiveRecord;
 
@@ -28,7 +28,7 @@ abstract class DataMapper implements LoggerAwareInterface {
   
   /**
    * объект бд
-   * @var Database
+   * @var DatabasePDO
    */
   protected $database;
   /**
@@ -42,7 +42,7 @@ abstract class DataMapper implements LoggerAwareInterface {
    */
   protected $tableName = '';
   
-  public function __construct(Database $database, Session $session) {
+  public function __construct(DatabasePDO $database, Session $session) {
     $this->database = $database;
     $this->session = $session;
   }

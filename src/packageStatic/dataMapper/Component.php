@@ -13,6 +13,7 @@ namespace smalex86\webframework\core\packageStatic\dataMapper;
 
 use smalex86\webframework\core\{DataMapper, ActiveRecord};
 use smalex86\webframework\core\packageStatic\activeRecord\Component as ComponentRecord;
+use exception\DatabaseException;
 
 /**
  * Description of Component
@@ -50,12 +51,18 @@ class Component extends DataMapper {
   }
   
   public function getByAlias($alias) {
-    $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row) {
-      return ComponentRecord::newRecord($row['comid'], $row['name'], $row['text'], $row['filename']);
-    }
+    $query = sprintf('select * from %s where name = :name limit 1', 
+            $this->getTableName());
+    $params = ['name' => $alias];
+    try {
+      $row = $this->database->selectSingleRow($query, $params);
+      if ($row) {
+        return ComponentRecord::newRecord($row['comid'], $row['name'], 
+                $row['text'], $row['filename']);
+      }
+    } catch (DatabaseException $e) {
+      
+    }   
     return null;
   }
   

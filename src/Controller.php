@@ -186,17 +186,6 @@ abstract class Controller implements LoggerAwareInterface {
    * Выполнить обработку пост-данных
    */
   abstract public function processAction(array $data);
-  
-  /**
-   * Метод возвращает DataMapper контроллера
-   */
-  abstract protected function getMapper();
-
-  /**
-   * Метод возвращает ActiveRecord контроллера
-   */
-  abstract protected function getRecord();
-
 
   /**
    * Метод возвращающий заголовок страницы\компонента\меню, который не входит в состав body
