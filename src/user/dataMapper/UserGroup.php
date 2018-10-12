@@ -32,10 +32,13 @@ class UserGroup extends DataMapper {
   }
 
   public function getById(int $id) {
-    $query = sprintf('select * from %s where id = %u limit 1', $this->getTableName(), $id);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
+    $query = sprintf('select * from %s where id = :id limit 1', 
+            $this->getTableName());
+    $params = ['id' => $id];
+    $row = $this->database->selectSingleRow($query, $params);
     if ($row && is_array($row)) {
-      return new UserGroupRecord($row['id'], $row['parent_id'], $row['name'], $row['description']);
+      return new UserGroupRecord($row['id'], $row['parent_id'], $row['name'], 
+              $row['description']);
     }
     return null;
   }
@@ -53,8 +56,9 @@ class UserGroup extends DataMapper {
             . 'LEFT JOIN `%1$s` AS l3 ON l3.id = l2.parent_id '
             . 'LEFT JOIN `%1$s` AS l4 ON l4.id = l3.parent_id '
             . 'LEFT JOIN `%1$s` AS l5 ON l5.id = l4.parent_id '
-            . 'WHERE l1.id = %2$u limit 1', $this->tableName, $id);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
+            . 'WHERE l1.id = :id limit 1', $this->tableName);
+    $params = ['id' => $id];
+    $row = $this->database->selectSingleRow($query, $params);
     if (is_array($row)) {
       $result = [];
       for ($i = 5; $i >= 2; $i--) {

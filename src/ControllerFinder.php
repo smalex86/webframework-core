@@ -11,7 +11,7 @@
 
 namespace smalex86\webframework\core;
 
-use smalex86\webframework\core\Database;
+use smalex86\webframework\core\DatabasePDO;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -28,7 +28,7 @@ class ControllerFinder {
    */
   protected $logger = null;
   
-  public function __construct(LoggerInterface $logger, Database $database) {
+  public function __construct(LoggerInterface $logger, DatabasePDO $database) {
     $this->logger = $logger;
     $this->database = $database;
   }
@@ -41,19 +41,26 @@ class ControllerFinder {
    * @return string|null
    */
   protected function getClassByAliasController($type, $alias, $action = 'view') {
-    $type = $this->database->getSafetyString($type);
-    $alias = $this->database->getSafetyString($alias);
-    $action = $this->database->getSafetyString($action);
-    $query = sprintf('select class '
+    $query = 'select class '
             . 'from core_controller c '
             . 'left join core_controller_type ct on ct.id = c.controller_type_id '
-            . 'where ct.name = "%s" and c.alias = "%s" and c.action = "%s"',
-            $type, $alias, $action);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row) {
-      $msg = 'alias='.$alias.', class='.$row['class'];
-      $this->logger->debug($msg);
-      return $row['class'];
+            . 'where ct.name = :type and c.alias = :alias and c.action = :action';
+    $params = [
+          'type' => $type,
+          'alias' => $alias,
+          'action' => $action
+      ];
+    try {
+      $row = $this->database->selectSingleRow($query, $params);
+      if ($row) {
+        $msg = 'alias='.$alias.', class='.$row['class'];
+        $this->logger->debug($msg);
+        return $row['class'];
+      }
+    } catch (\Exception $e) {
+        self::$logger->error('Exception: ' . $e->getMessage() . ', Trace: ' .
+                $e->getTraceAsString(), 
+                [$e->getFile(),$e->getLine()]);
     }
     return null;
   }

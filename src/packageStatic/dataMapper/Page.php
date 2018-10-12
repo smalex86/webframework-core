@@ -52,8 +52,10 @@ class Page extends DataMapper {
   
   public function getByAlias($alias) {
     $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where alias = "%s" limit 1', $this->getTableName(), $alias);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
+    $query = sprintf('select * from %s where alias = :alias limit 1', 
+            $this->getTableName());
+    $params = ['alias' => $alias];
+    $row = $this->database->selectSingleRow($query, $params);
     if ($row) {
       return PageRecord::newRecord($row['id'], $row['page_section_id'], $row['alias'], $row['link'], 
               $row['title'], $row['name'], $row['teaser'], $row['text'], $row['date_create'],

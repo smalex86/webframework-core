@@ -14,11 +14,11 @@ namespace smalex86\webframework\core;
 use ArrayObject;
 use Exception;
 use Psr\Log\LoggerAwareInterface;
-use smalex86\webframework\core\{Controller, Database, Session};
+use smalex86\webframework\core\{Controller, DatabasePDO, Session};
 use smalex86\webframework\core\exception\ControllerException;
 
 /**
- * Description of Server
+ * Server
  *
  * @author Alexandr Smirnov
  */
@@ -47,7 +47,7 @@ class Server implements LoggerAwareInterface {
   protected $session = null;
   /**
    * поле для хранения указателя на объект для работы с базой данных
-   * @var Database
+   * @var DatabasePDO
    */
   protected $database = null;
   /**
@@ -72,7 +72,7 @@ class Server implements LoggerAwareInterface {
    */
   protected $namespace = '';
   
-  public function __construct(ArrayObject $config, Database $database) {
+  public function __construct(ArrayObject $config, DatabasePDO $database) {
     $this->namespace = __NAMESPACE__;
     $this->config = $config;
     $this->database = $database;
@@ -106,7 +106,7 @@ class Server implements LoggerAwareInterface {
   /**
    * Возвращает объект соединения с базой данных, при создании объекта выполняется 
    * попытка подключения к базе данных
-   * @return Database
+   * @return DatabasePDO
    */
   public function getDatabase() {
     return $this->database;

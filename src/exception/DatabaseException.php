@@ -16,6 +16,6 @@ namespace smalex86\webframework\core\exception;
  *
  * @author Alexandr Smirnov <mail_er@mail.ru>
  */
-class DatabaseException extends DatabaseException {
+class DatabaseException extends BaseException {
     
 }
