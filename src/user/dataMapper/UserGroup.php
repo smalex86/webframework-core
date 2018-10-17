@@ -51,11 +51,11 @@ class UserGroup extends DataMapper {
   public function getParentListById(int $id) 
   {
     $query = sprintf('SELECT l2.id as id2, l3.id as id3, l4.id as id4, l5.id as id5 '
-            . 'FROM `%1$s` l1 '
-            . 'LEFT JOIN `%1$s` AS l2 ON l2.id = l1.parent_id '
-            . 'LEFT JOIN `%1$s` AS l3 ON l3.id = l2.parent_id '
-            . 'LEFT JOIN `%1$s` AS l4 ON l4.id = l3.parent_id '
-            . 'LEFT JOIN `%1$s` AS l5 ON l5.id = l4.parent_id '
+            . 'FROM %1$s l1 '
+            . 'LEFT JOIN %1$s AS l2 ON l2.id = l1.parent_id '
+            . 'LEFT JOIN %1$s AS l3 ON l3.id = l2.parent_id '
+            . 'LEFT JOIN %1$s AS l4 ON l4.id = l3.parent_id '
+            . 'LEFT JOIN %1$s AS l5 ON l5.id = l4.parent_id '
             . 'WHERE l1.id = :id limit 1', $this->tableName);
     $params = ['id' => $id];
     $row = $this->database->selectSingleRow($query, $params);

@@ -59,7 +59,7 @@ class Menu extends DataMapper {
         // загрузить пункты меню
         $query = 'select * from core_menu_item where menu_id = :menu_id';
         $params = ['menu_id' => $rowMenu['id']];
-        $rowMenuItems = $this->database->selectMutlipleRows($query, $params);
+        $rowMenuItems = $this->database->selectMultipleRows($query, $params);
         if (is_array($rowMenuItems)) {
           return MenuRecord::newRecord($rowMenu['id'], $rowMenu['name'], 
                   $rowMenu['template'], $rowMenu['type'], $rowMenuItems);
