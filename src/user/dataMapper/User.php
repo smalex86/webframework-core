@@ -141,12 +141,12 @@ class User extends DataMapper {
   }
   
   public function getListByIdList(array $idList) {
-    $ids = implode(',', $idList);
-    $query = sprintf('select * from %s where id in (:ids)', $this->tableName);
-    $params = ['ids' => $ids];
+    $data = $this->getParamListForInPrepare($idList);
+    $query = sprintf('select * from %s where id in (%s)', $this->tableName, 
+            $data['in']);
     $result = null;
     try {
-      $rows = $this->database->selectMultipleRows($query, $params);
+      $rows = $this->database->selectMultipleRows($query, $data['params']);
       foreach ($rows as $row) {
         $result[] = new UserRecord(
               $row['id'], 

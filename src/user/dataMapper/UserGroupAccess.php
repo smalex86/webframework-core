@@ -51,10 +51,10 @@ class UserGroupAccess extends DataMapper {
    */
   public function getListForGroupIdChain(array $groupIdChain) 
   {
-    $query = sprintf('SELECT * FROM %s WHERE user_group_id in (:ids)', 
-            $this->getTableName());
-    $params = ['ids' => implode(',', $groupIdChain)];
-    $rows = $this->database->selectMultipleRows($query, $params);
+    $data = $this->getParamListForInPrepare($groupIdChain);
+    $query = sprintf('SELECT * FROM %s WHERE user_group_id in (%s)', 
+            $this->getTableName(), $data['in']);
+    $rows = $this->database->selectMultipleRows($query, $data['params']);
     $groupAccessList = [];
     if (is_array($rows)) {
       $rules = $this->fillAccessRulesForGroup($rows, $groupIdChain);
