@@ -62,6 +62,7 @@ abstract class DataMapper implements LoggerAwareInterface {
    * @return array Массив [in - в запрос, params - в параметры]
    */
   public function getParamListForInPrepare(array $ids) {
+    $result = ['in' => '', 'params' => []];
     $in = "";
     foreach ($ids as $i => $item) {
       $key = ":id" . $i;
