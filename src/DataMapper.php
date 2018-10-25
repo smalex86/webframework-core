@@ -70,6 +70,9 @@ abstract class DataMapper implements LoggerAwareInterface {
       $result['params'][$key] = $item;
     }
     $result['in'] = rtrim($in, ",");
+    if (count($result['params']) == 0) {
+      $result['in'] = 0;
+    }
     return $result;
   }
 
