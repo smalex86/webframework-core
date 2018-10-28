@@ -14,11 +14,11 @@ namespace smalex86\webframework\core;
 use ArrayObject;
 use Exception;
 use Psr\Log\LoggerAwareInterface;
-use smalex86\webframework\core\{Controller, Database, Session};
+use smalex86\webframework\core\{Controller, DatabasePDO, Session};
 use smalex86\webframework\core\exception\ControllerException;
 
 /**
- * Description of Server
+ * Server
  *
  * @author Alexandr Smirnov
  */
@@ -47,7 +47,7 @@ class Server implements LoggerAwareInterface {
   protected $session = null;
   /**
    * поле для хранения указателя на объект для работы с базой данных
-   * @var Database
+   * @var DatabasePDO
    */
   protected $database = null;
   /**
@@ -72,7 +72,7 @@ class Server implements LoggerAwareInterface {
    */
   protected $namespace = '';
   
-  public function __construct(ArrayObject $config, Database $database) {
+  public function __construct(ArrayObject $config, DatabasePDO $database) {
     $this->namespace = __NAMESPACE__;
     $this->config = $config;
     $this->database = $database;
@@ -106,7 +106,7 @@ class Server implements LoggerAwareInterface {
   /**
    * Возвращает объект соединения с базой данных, при создании объекта выполняется 
    * попытка подключения к базе данных
-   * @return Database
+   * @return DatabasePDO
    */
   public function getDatabase() {
     return $this->database;
@@ -294,6 +294,44 @@ class Server implements LoggerAwareInterface {
   }
   
   /**
+   * Метод для обработки ajax-запросов
+   * @return boolean
+   */
+  public function startAjaxManager() {
+    if (isset($_GET['unit']) && is_string($_GET['unit'])) {
+      $ajaxUnit = $_GET['unit'];
+    } else {
+      return $this->sendAjaxData('Не найден атрибут "unit" в запросе');
+    }
+    try {
+      $controller = $this->getController('page', $ajaxUnit);
+    } catch (ControllerException $ce) {
+      return $this->sendAjaxData('Произошла ошибка: ' . $ce->getMessage());
+    }
+    $postData = [];
+    if ($_POST && isset($_POST[$ajaxUnit]) && is_array($_POST[$ajaxUnit])) {
+      $postData = $this->database->getSafetyStringList($_POST[$ajaxUnit]);
+    }
+    $result = $controller->processAjax($_GET, $postData);
+    return $this->sendAjaxData($result);
+  }
+  
+  /**
+   * Метод для отправки данных для ответа через ajax
+   * @param string|array $data
+   * @return boolean
+   */
+  protected function sendAjaxData($data) {
+    if (is_array($data)) {
+      header('Content-Type: application/json; charset=utf-8');
+      echo json_encode($data);
+    } else {
+      echo $data;
+    }
+    return true;
+  }
+  
+  /**
    * Получить настройки контроллеров по типу
    * Если тип не указан вернуть все настройки контроллеров
    * 
@@ -359,6 +397,7 @@ class Server implements LoggerAwareInterface {
       $controller = new $controllerConfig['class']($this, $alias, $action);
       $controller->setLogger($this->logger);
       $controller->mergeViewList($controllerConfig['action']);
+      $controller->setGetData($_GET);
       return $controller;
     } catch (Exception $e) {
       $msg = 'Error initialization controller with class = ' . $controllerConfig['class']

@@ -19,13 +19,48 @@ use Psr\Log\LoggerAwareInterface;
  * @author Alexandr Smirnov
  */
 abstract class ActiveRecord implements LoggerAwareInterface {
-  
+
+  /**
+   * Константа статуса активной записи
+   */
+  const STATUS_ACTIVE = 1;
+
+  /**
+   * Константа статуса не активной записи
+   */
+  const STATUS_NOT_ACTIVE = 2;
+
+  /**
+   * Константа статуса удаленной записи
+   */
+  const STATUS_DELETE = 3;
+
   use \Psr\Log\LoggerAwareTrait;
 
+  /**
+   * DataMapper
+   * @var DataMapper
+   */
+  protected $dataMapper = null;
+  
   public function __construct() {
-    
+    ;
   }
   
-  //abstract static public function newRecord();
-  
+  /**
+   * Печать объекта
+   * @return string
+   */
+  public function __toString() {
+    $keyValue = [];
+    foreach ($this as $key => $value) {
+      $keyValue[] = $key . '=' . var_export($value, true);
+    }
+    return sprintf('Object of %s(%s)', get_class($this), implode(';', $keyValue));
+  }
+
+  public function setDataMapper(DataMapper $dataMapper) {
+    $this->dataMapper = $dataMapper;
+  }
+
 }

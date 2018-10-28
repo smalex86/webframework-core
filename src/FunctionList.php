@@ -12,17 +12,30 @@
 namespace smalex86\webframework\core;
 
 /**
- * Description of FunctionObject
+ * FunctionObject
  *
- * @author Alexandr Smirnov
+ * @author Alexandr Smirnov <mail_er@mail.ru>
  */
 class FunctionList {
 
+  /**
+   * Массив переменных
+   * @var array
+   */
   static public $varArray = [];
+  /**
+   * Название активного шаблона
+   * @var string
+   */
+  static protected $activeTemplate = 'main';
+  /**
+   * Url папки assets
+   * @var string
+   */
+  static protected $assetsUrl = '';
   
   /**
-   * вычисление протокола сервера
-   * 
+   * Вычисление протокола сервера
    * @return string
    */
   static public function getServerProtocol() {
@@ -35,7 +48,6 @@ class FunctionList {
 
   /**
    * Выводит значение хоста сервера без протокола и uri
-   * 
    * @return string
    */
   static public function getServerHost() {
@@ -43,17 +55,82 @@ class FunctionList {
   }
 
   /**
-   * Формирует и возвращает текущий адрес страницы вида <протокол>://<хост>/<uri>
-   * 
+   * Выводит номер порта сервера
+   * @return string
+   */
+  static public function getServerPort() {
+    return $_SERVER['SERVER_PORT'];
+  }
+  
+  /**
+   * Выводит uri текущей страницы
+   * @return string
+   */
+  static public function getServerUri() {
+    return $_SERVER['REQUEST_URI'];
+  }
+  
+  /**
+   * Формирует и возвращает текущий адрес страницы вида <протокол>://<хост>(:<port>)/<uri>
    * @return string
    */
   static public function getCurrentUrl() {
-    return self::getServerProtocol() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $protocol = self::getServerProtocol();
+    $port = self::getServerPort();
+    if ($protocol == 'http://' && $port == '80') {
+      $port = '';
+    } else if ($protocol == 'https://' && $port == '443') {
+      $port = '';
+    } 
+    $port = ':' . $port;
+    return $protocol . $port . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
   }
   
-  
+  /**
+   * Имя текущего скрипта
+   * @return string
+   */
   static public function getScriptName() {
     return $_SERVER['SCRIPT_NAME'];
+  }
+  
+  /**
+   * Указать активный шаблон
+   * @param string $activeTemplate
+   */
+  static public function setActiveTemplate(string $activeTemplate) {
+    self::$activeTemplate = $activeTemplate;
+  }
+  /**
+   * Получить название активного шаблона
+   * @return string
+   */
+  static public function getActiveTemplate(): string {
+    return self::$activeTemplate;
+  }
+  /**
+   * Получить uri пути к папке assets
+   * @return string
+   */
+  static public function getAssetsPath() {
+    if (!self::$assetsUrl) {
+      self::$assetsUrl = 'assets/' . self::$activeTemplate . '/';
+    }
+    return self::$assetsUrl;
+  }
+  /**
+   * Получить uri пути к папке assets js
+   * @return string
+   */
+  static public function getAssetsJsPath() {
+    return self::getAssetsPath() . 'js/';
+  }
+  /**
+   * Получить uri пути к папке assets css
+   * @return string
+   */
+  static public function getAssetsCssPath() {
+    return self::getAssetsPath() . 'css/';
   }
   
   /**

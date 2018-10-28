@@ -88,7 +88,7 @@ class UserGroup extends ActiveRecord {
       } else {
         $userGroupMapper = new UserGroupMapper($this->application->getDatabase(), 
                 $this->application->getSession());
-        $groupChain = $userGroupMapper->getParentListById($this->id) + [$this->id];
+        $groupChain = array_merge($userGroupMapper->getParentListById($this->id), [$this->id]);
         $userGroupAccessMapper = new UserGroupAccessMapper($this->application->getDatabase(), 
                 $this->application->getSession());
         $this->accessList = $userGroupAccessMapper->getListForGroupIdChain($groupChain);

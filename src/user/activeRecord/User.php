@@ -28,7 +28,7 @@ class User extends ActiveRecord {
   /** Логин */
   public $login;
   /** Пароль */
-  public $password;
+  protected $password;
   /** Идентификатор группы пользователя */
   public $groupId;
   /** Имя */
@@ -62,10 +62,16 @@ class User extends ActiveRecord {
   protected $group;
   
   /**
+   * Полное имя пользователя
+   * @var string
+   */
+  public $name;
+  
+  /**
    * Конструктор
    * @param int $id
    * @param string $login
-   * @param string $password
+   * @param string $passwordHash
    * @param int $groupId
    * @param string $fname
    * @param string $mname
@@ -77,12 +83,13 @@ class User extends ActiveRecord {
    * @param string $avatar
    * @param string $phone
    */
-  public function __construct($id, $login, $password, $groupId, $fname, $mname, $lname, $email, 
-          $emailVerificationCode, $emailVerified, $registrationDate, $avatar, $phone) {
+  public function __construct($id, $login, $passwordHash, $groupId, $fname, 
+          $mname, $lname, $email, $emailVerificationCode, $emailVerified, 
+          $registrationDate, $avatar, $phone) {
     parent::__construct();
     $this->id = $id;
     $this->login = $login;
-    $this->password = $password;
+    $this->password = $passwordHash;
     $this->groupId = $groupId;
     $this->fname = $fname;
     $this->mname = $mname;
@@ -93,6 +100,23 @@ class User extends ActiveRecord {
     $this->registrationDate = $registrationDate;
     $this->avatar = $avatar;
     $this->phone = $phone;
+    $this->name = $this->getName();
+  }
+  
+  /**
+   * Получить хэш пароля
+   * @return string
+   */
+  public function getPasswordHash() {
+    return $this->password;
+  }
+  
+  /**
+   * Получает хэш пароля и сохраняет в объекте
+   * @param string $password
+   */
+  public function setPassword(string $password) {
+    $this->password = md5($password);
   }
   
   /**
@@ -127,6 +151,19 @@ class User extends ActiveRecord {
       }
     }
     return $this->group;
+  }
+  
+  /**
+   * Получить полное имя пользователя
+   * @return string
+   */
+  private function getName() {
+    $name = $this->fname;
+    if ($this->mname) {
+      $name .= ' ' . $this->mname;
+    }
+    $name .= ' ' . $this->lname;
+    return $name;
   }
   
 }

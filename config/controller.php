@@ -53,6 +53,16 @@ $config['controller'] = [
             'view' => 'smalex86\\webframework\\core\\packageStatic\\view\\Component'
         ]
     ],
+    // session
+    [
+        'name' => 'session',
+        'type' => 'page',
+        'class' => 'smalex86\\webframework\\core\\session\\controller\\Session',
+        'action' => [
+            'view' => '',
+            'delPostMsg' => ''
+        ]
+    ],
     // user
     [
         'name' => 'user',

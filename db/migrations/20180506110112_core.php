@@ -2,7 +2,6 @@
 
 
 use Phinx\Migration\AbstractMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
 
 class Core extends AbstractMigration
 {
@@ -45,7 +44,7 @@ class Core extends AbstractMigration
               ->addColumn('email', 'string', ['null' => false, 'comment' => 'Электронная почта'])
               ->addColumn('email_verification_code', 'string', ['null' => false, 
                   'comment' => 'Код для потврерждения электронной почты'])
-              ->addColumn('email_verified', 'boolean', ['null' => false, 'default' => 0, 
+              ->addColumn('email_verified', 'boolean', ['null' => false, 'default' => false, 
                   'comment' => 'Флаг, определяющий верифицирована почта или нет'])
               ->addColumn('registration_date', 'timestamp', ['null' => true, 'default' => null, 
                   'comment' => 'Дата регистрации'])
@@ -77,11 +76,11 @@ class Core extends AbstractMigration
                   'comment' => 'Идентификатор объекта, если указан, то значит правило '
                   . 'распространяется на определенную запись заданной сущности, если не задан, то '
                   . 'на все записи сущности'])
-              ->addColumn('a_admin', 'boolean', ['null' => false, 'default' => 0,
+              ->addColumn('a_admin', 'boolean', ['null' => false, 'default' => false,
                   'comment' => 'Предоставлены права администратора'])
-              ->addColumn('a_read', 'boolean', ['null' => false, 'default' => 0,
+              ->addColumn('a_read', 'boolean', ['null' => false, 'default' => false,
                   'comment' => 'Предоставлены права на чтение'])
-              ->addColumn('a_write', 'boolean', ['null' => false, 'default' => 0,
+              ->addColumn('a_write', 'boolean', ['null' => false, 'default' => false,
                   'comment' => 'Предоставлены права на запись'])
               ->create();
       /**
@@ -109,7 +108,7 @@ class Core extends AbstractMigration
               ->addColumn('date_update', 'timestamp', ['null' => true, 'default' => null,
                   'comment' => 'Дата обновления содержимого страницы'])
               ->addColumn('published', 'boolean', ['null' => false, 'signed' => false, 
-                  'default' => 0, 
+                  'default' => false, 
                   'comment' => 'Флаг, определяющий размещение или снятие с публикации материала'])
               ->create();
       /**
@@ -146,9 +145,9 @@ class Core extends AbstractMigration
               ->addColumn('name', 'string', ['null' => false, 'comment' => 'Текст пункта меню'])
               ->addColumn('link', 'string', ['null' => false, 'comment' => 'Ссылка пункта меню'])
               ->addColumn('weight', 'integer', ['null' => false, 'default' => 100, 
-                  'limit' => MysqlAdapter::INT_TINY, 
+                  'limit' => 255, 
                   'comment' => 'Вес пункта меню, чем меньше, тем выше в списке'])
-              ->addColumn('enabled', 'boolean', ['null' => false, 'default' => 0,
+              ->addColumn('enabled', 'boolean', ['null' => false, 'default' => false,
                   'comment' => 'Определяет включен пункт меню или нет'])
               ->create();
       /**
@@ -166,8 +165,8 @@ class Core extends AbstractMigration
        */
       $table = $this->table('core_controller_type', ['comment' => 'Типы контроллеров']);
       $table->addColumn('name', 'string', ['comment' => 'Название типа'])
-              ->addColumn('description', 'text', ['null' => true, 
-                  'limit' => MysqlAdapter::TEXT_TINY, 'comment' => 'Примечание'])
+              ->addColumn('description', 'string', ['null' => true, 
+                  'limit' => 255, 'comment' => 'Примечание'])
               ->create();
     }
 }

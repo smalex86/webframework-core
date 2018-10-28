@@ -50,19 +50,25 @@ class Menu extends DataMapper {
   }
   
   public function getByAlias($alias) {
-    $alias = $this->database->getSafetyString($alias);
-    $query = sprintf('select * from %s where name = "%s" limit 1', $this->getTableName(), $alias);
-    $row = $this->database->selectSingleRow($query, __FILE__.':'.__LINE__);
-    if ($row && isset($row['id'])) {
-      // загрузить пункты меню
-      $query = sprintf('select * from core_menu_item where menu_id = %u', $row['id']);
-      $items = $this->database->selectMultipleRows($query, __FILE__.':'.__LINE__);
-      if (is_array($items)) {
-        return MenuRecord::newRecord($row['id'], $row['name'], $row['template'], $row['type'], 
-                $items);
+    $query = sprintf('select * from %s where name = :name limit 1', 
+            $this->getTableName());
+    $params = ['name' => $alias];
+    try {
+      $rowMenu = $this->database->selectSingleRow($query, $params);
+      if ($rowMenu && isset($rowMenu['id'])) {
+        // загрузить пункты меню
+        $query = 'select * from core_menu_item where menu_id = :menu_id';
+        $params = ['menu_id' => $rowMenu['id']];
+        $rowMenuItems = $this->database->selectMultipleRows($query, $params);
+        if (is_array($rowMenuItems)) {
+          return MenuRecord::newRecord($rowMenu['id'], $rowMenu['name'], 
+                  $rowMenu['template'], $rowMenu['type'], $rowMenuItems);
+        }
+        return null;
       }
-      return null;
-    }
+    } catch (DatabaseException $e) {
+      
+    }   
     return null;
   }
   
