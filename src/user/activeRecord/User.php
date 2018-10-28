@@ -62,10 +62,16 @@ class User extends ActiveRecord {
   protected $group;
   
   /**
+   * Полное имя пользователя
+   * @var string
+   */
+  public $name;
+  
+  /**
    * Конструктор
    * @param int $id
    * @param string $login
-   * @param string $password
+   * @param string $passwordHash
    * @param int $groupId
    * @param string $fname
    * @param string $mname
@@ -94,6 +100,7 @@ class User extends ActiveRecord {
     $this->registrationDate = $registrationDate;
     $this->avatar = $avatar;
     $this->phone = $phone;
+    $this->name = $this->getName();
   }
   
   /**
@@ -144,6 +151,19 @@ class User extends ActiveRecord {
       }
     }
     return $this->group;
+  }
+  
+  /**
+   * Получить полное имя пользователя
+   * @return string
+   */
+  private function getName() {
+    $name = $this->fname;
+    if ($this->mname) {
+      $name .= ' ' . $this->mname;
+    }
+    $name .= ' ' . $this->lname;
+    return $name;
   }
   
 }
