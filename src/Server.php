@@ -298,19 +298,20 @@ class Server implements LoggerAwareInterface {
    * @return boolean
    */
   public function startAjaxManager() {
-    if (isset($_GET['unit']) && is_string($_GET['unit'])) {
-      $ajaxUnit = $_GET['unit'];
+    if (isset($_GET['entity']) && is_string($_GET['entity'])) {
+      $entity = $_GET['entity'];
     } else {
-      return $this->sendAjaxData('Не найден атрибут "unit" в запросе');
+      return $this->sendAjaxData('Не найден атрибут "entity" в запросе');
     }
+    $action = (isset($_GET['action'])) ? $_GET['action'] : 'view';
     try {
-      $controller = $this->getController('page', $ajaxUnit);
+      $controller = $this->getController('component', $entity, $action);
     } catch (ControllerException $ce) {
       return $this->sendAjaxData('Произошла ошибка: ' . $ce->getMessage());
     }
     $postData = [];
-    if ($_POST && isset($_POST[$ajaxUnit]) && is_array($_POST[$ajaxUnit])) {
-      $postData = $this->database->getSafetyStringList($_POST[$ajaxUnit]);
+    if ($_POST && isset($_POST[$entity]) && is_array($_POST[$entity])) {
+      $postData = $this->database->getSafetyStringList($_POST[$entity]);
     }
     $result = $controller->processAjax($_GET, $postData);
     return $this->sendAjaxData($result);
