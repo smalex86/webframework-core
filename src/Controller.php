@@ -26,6 +26,12 @@ abstract class Controller implements LoggerAwareInterface {
   use LoggerAwareTrait;
   
   /**
+   * Работа идет через ajax
+   * @var bool
+   */
+  public $ajax = false;
+  
+  /**
    * Список классов представлений для различных action
    * Набор данных вида: ['action' => 'viewClass']
    * 
