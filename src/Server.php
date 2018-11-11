@@ -304,6 +304,7 @@ class Server implements LoggerAwareInterface {
       return $this->sendAjaxData('Не найден атрибут "entity" в запросе');
     }
     $action = (isset($_GET['action'])) ? $_GET['action'] : 'view';
+    $action .= '_ajax';
     try {
       $controller = $this->getController('component', $entity, $action);
     } catch (ControllerException $ce) {
